@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}Write Exam{% endblock title %}
+{% block body_id %}write_exam{% endblock %}
+
+{% block controller %}
+	ng-controller="WriteExamController" ng-init="init('{{csrf_token}}')"
+{% endblock controller %}
+
+{% block content %}
+ <div id="main-title">
+	<div class="alert alert-info" align="Center">
+		<h4>Write Exam</h4>
+	</div>
+</div>
+<div>
+	<div>
+		<label> Course</label>  
+	</div>
+	<div>
+		<select name="course" ng-model="course" ng-options="course.id as course.course for course in courses" ng-change="get_semester()">
+			<option value="">Select</option>
+		</select>
+	</div>
+	<div>
+		<label> Semester</label>  
+	</div>
+	<div>
+		<select name="semester" ng-model="semester" ng-options="semester.id as semester.semester for semester in semesters" ng-change="get_exams()">
+			<option value="">Select</option>
+		</select>
+	</div>
+	<div>
+		<label> Exam</label>  
+	</div>
+	<div>
+		<input type="text" name="exam_name" ng-model="exam_name" readonly>
+	</div>
+	<div>
+		<label> Subject </label>  
+	</div>
+	<div>
+		<select name="subject" ng-model="subject" ng-options="subject.subject_id as subject.subject for subject in subjects" ng-change="get_question_paper()">
+			<option value="">Select</option>	
+		</select>
+	</div>
+</div>
+<div class="col-xs-12 col-lg-8" ng-show="is_exam">
+    <div class="row otr-brdr">
+      	<div class="col-hd col-wrap">
+        	<h4>Write Exam</h4>
+    	</div>
+        <div class="col-xs-12 col-hd-bottom">
+            <div class="row">
+            	<div ng-repeat="question in questions">
+					<div>
+						<label> [[$index+1]].[[question.question]]</label>  
+					</div>
+					<ol type="A">
+						<li ng-repeat="choice in question.choices"> 
+							<div>
+								<label> [[choice.choice]]</label>  
+							</div>
+							<!-- <div>
+								<input type="radio" ng-model="answer">
+							</div> -->
+						</li>
+					</ol>
+					<ol type="A">
+						<li ng-repeat="choice in question.choices"> 
+							<div>
+								<input type="radio" ng-model="answer">
+							</div>
+						</li>
+					</ol>
+            	</div>
+            	<div ng-show="questions.length > 0">
+					{% include 'pagination_div.html' %}
+				</div>
+        	</div>
+    	</div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -7,7 +7,6 @@
 {% endblock controller %}
 
 {% block dialogue_popup %}
-	{% include 'add_student.html' %}
 	{% include 'view_student_details.html' %} 
 	           	
 {% endblock %}
@@ -17,27 +16,22 @@
 		<div class="alert alert-info" align="Center"> Students </div>
 		<div class="search_students">
 			<label> Course</label> 
-			<select name="course" ng-model="course" ng-change="get_batch()">
+			<select name="course" ng-model="course" ng-change="get_semester()">
 				<option value="">Select</option>
 				<option ng-repeat="course in courses" value="[[course.id]]">[[course.course]]
 				</option>
 			</select>
-			<label> Batch</label> 
-			<select name="batch" ng-model="batch" ng-change="get_students()">
-				<option value="">Select</option>
-				<option ng-repeat="bat in batches" value="[[bat.id]]">[[bat.name]]
-				</option>
-			</select>
-		</div>
-		<div  class="new_button">		
-			<input type="button" class="btn btn-info" value="New student" ng-click="add_new_student()">
+				<label> Semester</label> 
+				<select name="semester" ng-model="semester" ng-options="semester.id as semester.semester for semester in semesters" ng-change="get_students()">
+					<option value="">Select</option>
+				</select>
 		</div>
 	</div>
 	<div class="list_student">
 		<table id="list" class="table table-hover" >
 			<tr class="success" style="font-size: 12px" style="width:auto">			
 			  	<th>Student Name</th>
-			  	<th>Roll No</th>			  
+			  	<th>Registration No</th>			  
 			  	<th>View</th>
 			  	<th>Edit</th>
 			  	<th>Delete</th>			  

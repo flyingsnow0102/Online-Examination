@@ -29,14 +29,20 @@
 					</ul>
 				</li>
 				
-				<li class="menu"> <a href="{% url 'list_student' %}"> Student </a>
+				<li class="menu"> <a href=""> Student </a>
+					<ul> 
+						<li> <a href="{% url 'list_student' %}"> Student </a></li>
+						<li> <a href="{% url 'add_student' %}"> Add Student </a> </li>
+						
+					</ul>
 					
 				</li>
 				<li class="menu"> <a href=""> Exam </a>
 					<ul>
 						<li> <a href="{% url 'schedule_exam' %}"> Exam</a> </li>
 						<li> <a href="{% url 'create_exam' %}"> Create Exam</a> </li>
-						<li> <a href="{% url 'marks' %}"> Marks</a> </li>
+						<li> <a href="{% url 'marks' %}"> Create Questions</a> </li>
+						<li> <a href="{% url 'write_exam' %}"> Write Exam</a> </li>
 					</ul>
 				</li>
 				

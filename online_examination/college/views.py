@@ -12,8 +12,11 @@ from academic.models import Student
 
 class ListCourse(View):
     def get(self, request, *args, **kwargs):
-
-        courses = Course.objects.all()
+        if request.user.is_superuser:
+            courses = Course.objects.all()
+        else:
+            student = Student.objects.get(user=request.user)
+            courses = Course.objects.filter(id=student.course.id)
         ctx = {
             'courses': courses
         }

@@ -407,22 +407,35 @@ function EditExamController($scope, $element, $http, $timeout, share, $location)
     }    
 }
 
-function MarksController($scope, $element, $http, $timeout, share, $location)
+function QuestionController($scope, $element, $http, $timeout, share, $location)
 {
     $scope.init = function(csrf_token)
     {
-        $scope.popup = '';
+        
         $scope.csrf_token = csrf_token;
         $scope.error_flag = false;
         $scope.edit_marks = false;
         $scope.display_marks = false;
-        $scope.exam = {
+        $scope.exam_name = '';
+        $scope.question_details = {
+            'course': '',
             'exam': '',
-            'total_mark': '',
-            'no_subjects':'',
-            'id' :'',
-            'subjects': ''               
-        }
+            'semester': '',
+            'questions': [ 
+                {
+                'question': '',
+                'choices': [
+                    {
+                        'choice': '', 
+                        'correct_answer': false,
+                    }
+                ],
+                'mark': '', 
+                 }
+                
+            ],
+            'subject': '',
+        };
         $scope.subjects = [];
         $scope.visible_list = [];
         get_course_list($scope, $http);
@@ -442,66 +455,46 @@ function MarksController($scope, $element, $http, $timeout, share, $location)
             format:'%d/%m/%Y',
         });
     }
-    $scope.get_batch = function(){
+    $scope.get_semester = function(){
         $scope.edit_marks = false;
         $scope.display_marks = false;
-        $scope.url = '/college/get_batch/'+ $scope.course+ '/';
-        $http.get($scope.url).success(function(data)
-        {
-            $scope.batches = data.batches;
-        }).error(function(data, status)
-        {
-            console.log(data || "Request failed");
-        });
-        var url = '/college/get_semester/?id='+$scope.course;
+        $scope.exam_name = '';
+        $scope.subjects = ''; 
+        var url = '/college/get_semester/?id='+$scope.question_details.course;
         $http.get(url).success(function(data) {
+            $scope.semesters = '';
             $scope.semesters = data.semesters;
         }).error(function(data, status)
         {
             console.log(data || "Request failed");
         });
     }
-    $scope.validate_marks = function(marks) {        
+    $scope.validate_marks = function() {        
         $scope.validation_error = '';
         $scope.flag = 0;
-        for(var i = 0; i < marks.length; i++){
-            for(var j = 0; j < marks[i].exam_marks.length; j++){                        
-                for(var k = 0; k < marks[i].exam_marks[j].subjects.length; k++){                    
-                    if(!Number(marks[i].exam_marks[j].subjects[k].mark) && marks[i].exam_marks[j].subjects[k].mark.length > 0 )
-                        $scope.flag = 1;                    
-                    else if((Number(marks[i].exam_marks[j].subjects[k].mark) > Number(marks[i].exam_marks[j].subjects[k].maximum) ) && marks[i].exam_marks[j].subjects[k].mark != '' ){
-                        $scope.validation_error = "Invalid entry, maximum mark is "+marks[i].exam_marks[j].subjects[k].maximum ;
-                        return false; 
-                    }                       
-                }                                           
-            }
-        }
-        if($scope.course == '' || $scope.course== undefined) {
+       
+        if($scope.question_details.course == '' || $scope.question_details.course== undefined) {
             $scope.validation_error = "Please select course " ;
             return false;
-        } else if($scope.batch == '' || $scope.batch== undefined) {
-            $scope.validation_error = "Please select batch " ;
-            return false;
-        } else if($scope.semester == '' || $scope.semester== undefined) {
+        }else if($scope.question_details.semester == '' || $scope.question_details.semester== undefined) {
             $scope.validation_error = "Please select semester " ;
             return false;
-        } else if($scope.flag == 1){
-            $scope.validation_error = "Invalid entry in mark field " ;  
-            return false;             
-        } else if($scope.validation_error == ''){
-            return true     
-        } else {
-            return false;
-        }
+        } return true;
     }
 
-    $scope.save_marks = function(marks) {
-        if($scope.validate_marks(marks)){   
+    $scope.save_questions = function() {
+        if($scope.validate_marks()){ 
+            for(i=0;i<$scope.question_details.questions.length;i++){
+                for(j=0;j<$scope.question_details.questions[i].choices.length;j++){
+                    if($scope.question_details.questions[i].choices[j].correct_answer == true){
+                        $scope.question_details.questions[i].choices[j].correct_answer = "true";
+                    }else{
+                        $scope.question_details.questions[i].choices[j].correct_answer = "false";
+                    }
+                }
+            }  
             params = { 
-                'course': $scope.course,
-                'batch': $scope.batch,
-                'semester': $scope.semester,
-                'student': angular.toJson(marks),
+                'question_details': angular.toJson($scope.question_details),
                 "csrfmiddlewaretoken" : $scope.csrf_token
             }
             $http({
@@ -516,7 +509,7 @@ function MarksController($scope, $element, $http, $timeout, share, $location)
                     $scope.error_flag=true;
                     $scope.message = data.message;
                 } else {
-                    $scope.close_popup();
+                    document.location.href ='/exam/marks/';
                 }
             }).error(function(data, success){
                 $scope.error_flag=true;
@@ -524,94 +517,112 @@ function MarksController($scope, $element, $http, $timeout, share, $location)
             });
         }  
     }              
-    $scope.hide_popup_windows_mark = function(){
-        $('#add_marks')[0].setStyle('display', 'none');
-        $('#view_marks')[0].setStyle('display', 'none');
-    }
-    $scope.close_popup = function(){
-        $scope.edit_marks = false;
-        $scope.display_marks = false;
-        $scope.popup.hide_popup();
-        get_course_list($scope, $http);
-        $scope.batch = '';
-        $scope.semester = '';
-        $scope.visible_list = [];
-    }  
-    $scope.view_marks = function() {
-        $scope.popup = new DialogueModelWindow({
-            'dialogue_popup_width': '90%',
-            'message_padding': '0px',
-            'left': '28%',
-            'top': '182px',
-            'height': 'auto',
-            'content_div': '#view_marks'
-        });
-        $scope.close_popup();
-        $scope.hide_popup_windows_mark();
-        $('#view_marks')[0].setStyle('display', 'block');        
-        var height = $(document).height();
-        $scope.popup.set_overlay_height(height);
-        $scope.popup.show_content();
-    }
     
-    $scope.get_marks_details = function(){
-        $scope.url = '/exam/view_marks/' + $scope.course+ '/'+ $scope.batch+ '/'+ $scope.student+ '/'+ $scope.exam+ '/';
-        $http.get($scope.url).success(function(data)
-        {
-            $scope.exam_marks = data.exam_marks[0];
-        }).error(function(data, status)
-        {
-            console.log(data || "Request failed");
+
+    $scope.add_questions = function(){
+        $scope.question_details.questions.push({
+            'question': '',
+            'choices': [],
+            'mark': '',            
         });
     }
-    $scope.add_marks = function() {
-        $scope.popup = new DialogueModelWindow({
-            'dialogue_popup_width': '90%',
-            'message_padding': '0px',
-            'left': '28%',
-            'top': '182px',
-            'height': 'auto',
-            'content_div': '#add_marks'
+     $scope.add_choices = function(question){
+        question.choices.push({
+           
+            'choice': '', 
+            'correct_answer': false,
         });
-        $scope.close_popup();
-        $scope.hide_popup_windows_mark();
-        $('#add_marks')[0].setStyle('display', 'block');       
-        var height = $(document).height();
-        $scope.popup.set_overlay_height(height);
-        $scope.popup.show_content();
-    }     
+    }
+     
 
     $scope.get_exams = function(){    
-        $scope.validation_error = ""    
-        $scope.url = '/exam/get_exam/'+ $scope.course+ '/'+ $scope.batch+ '/'+ $scope.semester+ '/';
+        $scope.validation_error = "";
+        $scope.exam_name = '';
+        $scope.subjects = '';    
+        $scope.url = '/exam/get_exam/'+ $scope.question_details.course+ '/'+ $scope.question_details.semester+ '/';
         $http.get($scope.url).success(function(data)
-        {
-            if (data.students.length > 0) {
-                if(data.students[0].exam_marks == ''){
-                    $scope.edit_marks = false;    
-                    $scope.validation_error = "No data to display"
-                }
-                else
-                {
-                    $scope.students = data.students
-                    paginate($scope.students, $scope, 2);
-                    $scope.exams = data.students[0].exam_list;
-                    $scope.edit_marks = true;    
-                    $scope.validation_error = "";
-                } 
+        {   console.log(data.exams)
+            if (data.result == 'ok') {
+                $scope.question_details.exam = data.exams.exam;
+                $scope.exam_name = data.exams.exam_name;
+                $scope.subjects = data.exams.subjects_data;
             } else {
-                $scope.validation_error = "No students in this batch";
+                $scope.validation_error = "No exam in this course";
             }          
         }).error(function(data, status)
         {
             console.log(data || "Request failed");
         });
     } 
-
+   
     $scope.select_page = function(page){
         select_page(page, $scope.students, $scope, 2);
     }
     $scope.range = function(n) {
         return new Array(n);
     }
+}
+function WriteExamController($scope, $element, $http, $timeout, share, $location)
+{    $scope.init = function(csrf_token)
+    {
+        
+        $scope.csrf_token = csrf_token;
+        $scope.is_exam = false;
+        $scope.answer = '';
+        get_course_list($scope, $http);
+        
+    }
+    $scope.get_semester = function(){
+        $scope.edit_marks = false;
+        $scope.display_marks = false;
+        $scope.exam_name = '';
+        $scope.subjects = ''; 
+        var url = '/college/get_semester/?id='+$scope.course;
+        $http.get(url).success(function(data) {
+            $scope.semesters = '';
+            $scope.semesters = data.semesters;
+        }).error(function(data, status)
+        {
+            console.log(data || "Request failed");
+        });
+    }
+    $scope.get_exams = function(){    
+        $scope.validation_error = "";
+        $scope.exam_name = '';
+        $scope.subjects = '';    
+        $scope.url = '/exam/get_exam/'+ $scope.course+ '/'+ $scope.semester+ '/';
+        $http.get($scope.url).success(function(data)
+        {   console.log(data.exams)
+            if (data.result == 'ok') {
+                $scope.exam = data.exams.exam;
+                $scope.exam_name = data.exams.exam_name;
+                $scope.subjects = data.exams.subjects_data;
+                $scope.is_exam = true;
+            } else {
+                $scope.validation_error = "No exam in this course";
+                $scope.is_exam = false;
+            }          
+        }).error(function(data, status)
+        {
+            console.log(data || "Request failed");
+        });
+    } 
+    $scope.get_question_paper = function(){
+        var url = '/exam/get_questions/?subject='+$scope.subject+'&exam='+$scope.exam;
+        $http.get(url).success(function(data) {
+            $scope.questions = '';
+            $scope.questions = data.questions;
+            paginate($scope.questions, $scope);
+        }).error(function(data, status)
+        {
+            console.log(data || "Request failed");
+        });
+    }
+    $scope.select_page = function(page){
+        select_page(page, $scope.questions, $scope, 1);
+    }
+    $scope.range = function(n) {
+        return new Array(n);
+    }
+
 }

@@ -20,7 +20,11 @@ function select_page(page, list, $scope, page_interval) {
     $scope.visible_list = list.slice(start, end);
     $scope.current_page = page;
 }
-
+function HomeController($scope, $http) {
+    $scope.init = function(csrf_token){
+        $scope.login_type = 'Admin';
+    }
+}
 function get_semester_list($scope, $http) {
     $http.get('/college/list_semester/').success(function(data)
     {
@@ -97,8 +101,10 @@ function get_fee_structure_details($scope, $http, fees_structure_id) {
 }
 function get_course_list($scope, $http) {
     $http.get('/college/list_course/').success(function(data)
-    {
+    {   
+        $scope.semesters = '';
         $scope.courses = data.courses;
+
     }).error(function(data, status)
     {
         console.log(data || "Request failed");

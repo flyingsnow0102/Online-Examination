@@ -1,211 +1,152 @@
-<div style='display:none' id="add_student_details">
-    <div id='add_student_details' style='padding:10px; background:#fff;'>
-        <div class="sign_box">
-            <div class="row-fluid">
-                <div class="span12 sign_mid">
-	                <div id="main-title">
-						<div class="alert alert-info" align="Center">
-							<h4>Student Registration</h4>
-						</div>
-					</div>
-					<div class="section_1">
-						<div class="formrow">
-							<div class="formtext">
-								<label> Name</label>  
-							</div>
-							<div class="forminput">
-								<input type="text" name="student_name" value="" ng-model="student_name">
-							</div>
-							<div class="formtext">
-								<label > Roll No</label>  
-							</div>
-							<div class="forminput">
-								<input type="text" name="roll_number" value="" ng-model="roll_number">
-							</div>
-							<div class="formtext">
-								<label> Course</label>  
-							</div>
-							<div class="forminput">
-								<select name="course" ng-model="course" ng-change="get_batch() ">
-									<option value="">Select</option>
-									<option ng-repeat="course in courses" value="[[course.id]]" >[[course.course]]
-									</option>
-								</select>
-							</div>
-							<div class="formtext">
-								<label> Batch</label>  
-							</div>
-							<div class="forminput">
-								<select name="batch" ng-model="batch" ng-change="get_fees_head()">
-									<option value="">Select</option>
-									<option ng-repeat="batch in batches" value="[[batch.id]]"  >[[batch.name]]
-									</option>
-								</select>
-							</div>
-							<div class="formtext">
-								<label> Qualification</label>  
-							</div>
-							<div class="forminput">							
-								<input type="text" name="qualified_exam" value="" ng-model="qualified_exam">
-							</div>
-							<div class="formtext">
-								<label> Tech. Qual</label>  
-							</div>
-							<div class="forminput">							
-								<input type="text" name="technical_qualification" value="" ng-model="technical_qualification">
-							</div>
-							<div class="formtext">
-								<label> DOB</label>  
-							</div>
-							<div class="forminput">							
-								<input type="text"name="dob" value="" ng-model="dob" id="dob"></text>
-							</div>
-							<div class="formtext">
-								<label>Address</label> 
-							</div>
-							<div class="forminput">							
-								<textarea name="address" value="" ng-model="address"></textarea>
-							</div>
-							<div class="formtext">
-								<label > Mobile </label>			
-							</div>
-							<div class="forminput">							
-								<input type="text"  name="mobile_number" value=""  ng-model="mobile_number">
-							</div>
-							<div class="formtext">
-								<label> Tel:</label>			
-							</div>
-							<div class="forminput">							
-								<input type="text" name="land_number" value="" ng-model="land_number">						
-							</div>
-							<div class="formtext">
-								<label> Email</label>		
-							</div>
-							<div class="forminput">							
-								<input type="text"name="email" value="" ng-model="email"></textarea>						
-							</div>
-							<div class="formtext">
-								<label>Blood Group</label>		
-							</div>
-							<div class="forminput">							
-								<select ng-model="blood_group">
-									<option value="">Select</option>
-									<option value="A-">A-</option>
-									<option value="A+">A+</option>
-									<option value="B-">B-</option>
-									<option value="B+">B+</option>
-									<option value="AB-">AB-</option>
-									<option value="AB+">AB+</option>
-									<option value="O-">O-</option>
-									<option value="O+">O+</option>
-								</select>					
-							</div>
-							<div class="formtext">
-								<label > Date of join</label>
-							</div>
-							<div class="forminput">							
-								<input type="text"name="doj" value="" ng-model="doj" id="doj"></text>
-							</div>
-							<div class="formtext">
-								<label>Photo</label>
-							</div>
-							<div class="forminput">
-								<input type="file" fileread="photo_img.src"/>
-								<input type="hidden" ng-model="photo_img.src">
-							</div>
-						</div>
-						<div class="formrow">
-							<div class="formtext">
-								<label>Certificates </label>
-							</div>
-							<div class="forminput">
-								<textarea name="certificates_submitted" value="" ng-model="certificates_submitted"> </textarea>
-							</div>
-							<div class="formtext">
-								<label>Remarks </label>
-							</div>
-							<div class="forminput">
-								<textarea name="certificates_remarks" value="" ng-model="certificates_remarks"> </textarea>
-							</div>
+{% extends 'base.html' %}
+{% block title %}Student Details{% endblock title %}
+{% block body_id %}list_student{% endblock %}
 
-							<div class="formtext">
-								<label>File Number</label>			
-							</div>
-							<div class="forminput">
-								<input type="text" name="certificates_file" value="" ng-model="certificates_file">
-							</div>
-							<div class="formtext">
-								<label>ID Proofs </label>
-							</div>
-							<div class="forminput">
-								<textarea name="id_proof" value="" ng-model="id_proof"></textarea> 
-							</div>
-							<div class="formtext">
-								<label>Remarks </label>
-							</div>
-							<div class="forminput">
-								<textarea name="id_proof_remarks" value="" ng-model="id_proof_remarks"> </textarea>
-							</div>
-							<div class="formtext">
-								<label>File Number</label>
-							</div>
-							<div class="forminput">
-								<input type="text" name="id_proof_file" value="" ng-model="id_proof_file"> 						
-							</div>
-							<div class="control">
-								<label> Father/Mother/Guardian Details</label>
-								<label>&nbsp;</label>
-							</div>				
-							<div class="formtext">
-								<label> Name</label>				
-							</div>
-							<div class="forminput">
-								<input type="text" name="guardian_name" value="" ng-model="guardian_name">
-							</div>
-							<div class="formtext">
-								<label>Address</label>				
-							</div>
-							<div class="forminput">
-								<textarea name="guardian_address" value="" ng-model="guardian_address"> </textarea>
-							</div>
-							<div class="formtext">
-								<label> Relationship</label>
-							</div>
-							<div class="forminput">
-								<textarea name="relationship" value="" ng-model="relationship"></textarea>
-							</div>	
-							<div class="formtext">
-								<label > Mobile </label> 
-							</div>
-							<div class="forminput">
-								<input type="text"  name="guardian_mobile_number" value=""  ng-model="guardian_mobile_number">
-							</div>
-							<div class="formtext">
-								<label> Tel:</label>
-							</div>
-							<div class="forminput">
-								<input type="text" name="guardian_land_number" value="" ng-model="guardian_land_number">
-							</div>
-							<div class="formtext">
-								<label> Email</label>
-							</div>
-							<div class="forminput">
-								<input type="text"name="guardian_email" value="" ng-model="guardian_email">
-							</div>
-						</div>
-					</div>
-					<div  align="Center">		
-						<div class="buttons">
-							<p class="error_message"> [[validation_error]] </p>
-							<input type="button" class="btn btn-info" value="Cancel" ng-click="close_popup()" >
-							<input type="submit" value="Submit" ng-click="save_new_student()" class="btn btn-info">				
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+{% block controller %}
+  ng-controller="StudentListController" ng-init="init('{{csrf_token}}')"
+{% endblock controller %}
+{% block dialogue_popup %}
+  {% include 'show_password.html' %}
+{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="col-xs-12 col-lg-8">
+    <div class="row otr-brdr">
+      <div class="col-hd col-wrap">
+        <h4>Student Registration</h4>
+        </div>
+        <div class="col-xs-12 col-hd-bottom">
+            <div class="row">
+                <div class="col-xs-12 col-lg-8">
+                  <form class="form-horizontal">
+                    <div class="form-group">
+                      <label for="inputEmail3" class="col-sm-5 control-label">Registration No</label>
+                      <div class="col-sm-7">
+                        <input type="email" class="form-control" id="inputEmail3" placeholder="Registration No" ng-model="registration_no">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="inputPassword3" class="col-sm-5 control-label"> Hall Ticket Number</label>
+                      <div class="col-sm-7">
+                        <input type="password" class="form-control" id="inputPassword3" placeholder="Hall Ticket Number" ng-model="hall_ticket_no">
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <div class="col-xs-12 col-lg-4">
+                  <img class="img-right" src="/static/images/student-registration-img.jpg" />
+                  <input type="file" fileread="photo_img.src"/>
+                  <input type="hidden" ng-model="photo_img.src"/>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-wrap" >
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label for="inputEmail3" class="col-sm-4 control-label">Name</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" id="inputEmail3" placeholder="Name" ng-model="student_name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputPassword3" class="col-sm-4 control-label">Age </label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" id="inputPassword3" placeholder="Age " ng-model="age">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputPassword3" class="col-sm-4 control-label">DOB</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" ng-model="dob" id="dob" placeholder="DOB">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputPassword3" class="col-sm-4 control-label"> Address for communication</label>
+            <div class="col-sm-6">
+            <textarea class="form-control" placeholder=" Address for communication"ng-model="address" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputPassword3" class="col-sm-4 control-label"> Permanent address</label>
+            <div class="col-sm-6">
+            <textarea class="form-control" placeholder="Permanent address"ng-model="permanent_address" rows="3"></textarea>
+            </div>
+          </div>
+           
+          <div class="form-group">
+            <label for="inputPassword3" class="col-sm-4 control-label"> How they know this institution</label>
+            <div class="col-sm-2">
+            <div class="checkbox">
+                <label>
+                  <input type="checkbox">Newspaper
+                </label>
+              </div>
+            </div>
+            <div class="col-sm-2">
+            <div class="checkbox">
+                <label>
+                  <input type="checkbox">Ad
+                </label>
+              </div>
+            </div>
+            <div class="col-sm-2">
+            <div class="checkbox">
+                <label>
+                  <input type="checkbox">Website
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputPassword3" class="col-sm-4 control-label">Course </label>
+            <div class="col-sm-6">
+              <select name="course" ng-model="course" ng-change="get_semester() ">
+                  <option value="">Select</option>
+                  <option ng-repeat="course in courses" value="[[course.id]]" >[[course.course]]
+                  </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputPassword3" class="col-sm-4 control-label">Semester </label>
+            <div class="col-sm-6">
+              <select name="semester" ng-model="semester" ng-options="semester.id as semester.semester for semester in semesters" ng-change="get_exams()">
+                    <option value="">Select</option>
+                  </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputPassword3" class="col-sm-4 control-label"> Mobile number </label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" id="inputPassword3"ng-model="mobile_number" placeholder=" Mobile number ">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputPassword3" class="col-sm-4 control-label"> Parent mobile number </label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" id="inputPassword3" ng-model="guardian_mobile_number" placeholder=" Parent mobile number ">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputPassword3" class="col-sm-4 control-label"> E-mail id </label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" id="inputPassword3"ng-model="email" placeholder=" E-mail id ">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputPassword3" class="col-sm-4 control-label"></label>
+            <div class="col-sm-6">
+              <p class="error_message"> [[validation_error]] </p>
+              <input name="" class="btn btn-primary"ng-click="save_new_student()" type="button" value="Save and Continue" />
+            </div>
+          </div>
+            
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
+{% endblock content %}
 
 
 

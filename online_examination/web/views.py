@@ -1,6 +1,7 @@
 from django.views.generic.base import View
 from django.shortcuts import get_object_or_404, render
 from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.template import RequestContext
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
@@ -16,10 +17,17 @@ class Login(View):
     def get(self,request,*args,**kwargs):
         if request.user.is_authenticated():
             return HttpResponseRedirect(reverse('home'))
-        return render(request,'home.html',{})
+        return render_to_response('home.html',{},RequestContext(request))
 
     def post(self,request,*args,**kwargs):
-        user = authenticate(username=request.POST['username'], password=request.POST['password'])
+        if request.POST.get('username', '') and request.POST.get('password',''):
+            username = request.POST.get('username', '')
+            user = authenticate(username=request.POST.get('username', ''), password=request.POST.get('password',''))
+           
+        elif request.POST.get('registration_no','') and request.POST.get('hallticket_no','') and request.POST.get('password',''):
+            username = request.POST.get('registration_no','') + request.POST.get('hallticket_no','')
+            user = authenticate(username=username, password=request.POST.get('password',''))
+        
         if user and user.is_active:
             login(request, user)
         else:
@@ -28,7 +36,7 @@ class Login(View):
             }
             return render(request, 'home.html',context)
         context = {
-         'Success_message': 'Welcome '+request.POST['username']
+         'Success_message': 'Welcome '+username
         }
         return HttpResponseRedirect(reverse('home'))
 

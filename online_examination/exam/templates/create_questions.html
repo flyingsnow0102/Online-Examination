@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}Create Question{% endblock title %}
+{% block body_id %}create_question{% endblock %}
+
+{% block controller %}
+	ng-controller="QuestionController" ng-init="init('{{csrf_token}}')"
+{% endblock controller %}
+
+{% block dialogue_popup %}
+	      {% include 'view_marks.html' %}
+	      
+
+{% endblock %}
+
+{% block content %}
+	
+	
+<div class="sign_box">
+    <div class="row-fluid">
+        <div class="span12 sign_mid">
+            <div id="main-title">
+				<div class="alert alert-info" align="Center">
+					<h4>Create Questions</h4>
+				</div>
+			</div>
+			<div>
+				<div>
+					<label> Course</label>  
+				</div>
+				<div>
+					<select name="course" ng-model="question_details.course" ng-options="course.id as course.course for course in courses" ng-change="get_semester()">
+						<option value="">Select</option>
+					</select>
+				</div>
+				<div>
+					<label> Semester</label>  
+				</div>
+				<div>
+					<select name="semester" ng-model="question_details.semester" ng-options="semester.id as semester.semester for semester in semesters" ng-change="get_exams()">
+						<option value="">Select</option>
+					</select>
+				</div>
+				<div>
+					<label> Exam</label>  
+				</div>
+				<div>
+					<input type="text" name="exam_name" ng-model="exam_name" readonly>
+				</div>
+				<div>
+					<label> Subject </label>  
+				</div>
+				<div>
+					<select name="subject" ng-model="question_details.subject" ng-options="subject.subject_id as subject.subject for subject in subjects">
+						<option value="">Select</option>	
+					</select>
+				</div>
+				<h4>Add Questions</h4>
+					<input type="button" class="btn btn-info" value="+" ng-click="add_questions()">
+				<div>
+				<div ng-repeat="question in question_details.questions">
+					<div>
+						<label> Questions</label>  
+					</div>
+					<div>
+						<input type="text" name="question" id="" value="" ng-model="question.question">
+					</div>
+					<div ng-repeat="choice in question.choices"> 
+						<div>
+							<label> Enter The Answer Choice</label>  
+						</div>
+						<div>
+						
+							<input type="text" name="choice" id="" value="" ng-model="choice.choice">
+							<input type="checkbox" ng-model="choice.correct_answer"><label>Tick If Correct Answer</label>
+						
+							
+						</div>
+					</div>
+					<div>
+						<input type="button" class="btn btn-info" value="+" ng-click="add_choices(question)">
+					</div>
+					<div>
+						<label> Assign Mark</label>  
+					</div>
+					<div>
+						<input type="text" name="mark" id="" value="" ng-model="question.mark">
+					</div>
+				</div>
+					
+				</div>
+				<div>
+					<p class="error_message"> [[validation_error]] </p>			
+				</div>
+				<div></div>
+			</div>					
+			<div  align="Center">
+				<div class="buttons">
+					{% include 'pagination_div.html' %}
+					<p ng-show="error_flag" class="error_message">[[message]]</p>
+					<input type="submit" value="Save and Continue" ng-click="save_questions()" class="btn btn-info">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+		
+
+{% endblock content %}

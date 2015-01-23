@@ -47,60 +47,34 @@ class CreateExam(View):
         return render(request, 'add_exam_schedule_details.html',{})
 
 
-class Marks(View):
+class CreateQuestion(View):
     def get(self, request, *args, **kwargs):             
-        return render(request, 'marks.html', {})
+        return render(request, 'create_questions.html', {})
 
 class SaveMarks(View):
     def post(self, request, *args, **kwargs):
-        students = ast.literal_eval(request.POST['student'])
-        course = Course.objects.get(id = request.POST['course'])
-        semester = Semester.objects.get(id = request.POST['semester'])
+        questions = ast.literal_eval(request.POST['question_details'])
+        course = Course.objects.get(id = questions['course'])
+        semester = Semester.objects.get(id = questions['semester'])
+        exam = Exam.objects.get(id = questions['exam'])
+        subject = Subject.objects.get(id = questions['subject'])
         total_mark = 0
-        if request.is_ajax():                                               
-            for student_detail in students:
-                student = Student.objects.get(id = student_detail['student_id'])
-                for exam_detail in student_detail['exam_marks']:
-                    exam = Exam.objects.get(id = exam_detail['id']) 
-                    try:
-                        mark = StudentMark.objects.get(course=course,semester=semester,exam=exam,student=student)
-                        for subject_mark in mark.subject_mark.all():
-                            subject_mark.delete()
-                    except:
-                        mark = StudentMark() 
-                        mark.course=course
-                        mark.semester=semester
-                        mark.exam=exam
-                        mark.student=student           
-                    for subject_detail in exam_detail['subjects']:
-                        try:
-                            subject = SubjectMark.objects.get(subject_name = subject_detail['subject_name'])
-                        except:
-                            subject = SubjectMark()                                    
-                        subject.subject_name = Subject.objects.get(subject_name = subject_detail['subject'])
-                        subject.mark = subject_detail['mark']
-                        status = ''
-                        if subject_detail['mark'] and subject_detail['minimum']:                         
-                            if int(subject_detail['mark']) < int(subject_detail['minimum']):
-                                status = "FAIL"
-                            else:
-                                status = "PASS"
-                        subject.status = status
-                        if subject_detail['mark']:
-                            total_mark = total_mark + int(subject_detail['mark'])
-                        subject.save()
-                        mark.save()
-                        mark.subject_mark.add(subject)
-                    mark.total_mark = total_mark
-                    mark.save()                                          
-                    total_mark = 0
-                    res = {
-                        'result': 'ok',
-                    }  
+        if request.is_ajax(): 
+            # try:
+            for question_detail in questions['questions']:
+                question = Question.objects.create(exam=exam,subject=subject)
+                question_data = question.set_attributes(question_detail)
+            res = {
+                'result': 'ok',
+            } 
+            # except:
+            #     res = {
+            #             'result': 'error',
+            #         } 
             status_code = 200
             response = simplejson.dumps(res)
             return HttpResponse(response, status = status_code, mimetype="application/json")
-        return render(request, 'marks.html', {})
+        return render(request, 'create_questions.html', {})
 
 
 def save_exam_schedule_details(exam, request):
@@ -202,69 +176,16 @@ class GetExams(View):
         
         course_id = kwargs['course_id']
         semester_id = kwargs['semester_id']
-        ctx_exam_marks = []
-        ctx_subjects = []
-        ctx_student = []
+        exams = {}
         if request.is_ajax():
             try:
-                exams = Exam.objects.filter(course=course_id, semester=semester_id)              
-                students = Student.objects.filter(course=course_id).order_by('roll_number')
-                for student in students:
-                    for exam in exams:
-                        try:
-                            for subject in exam.subjects.all():
-                                try:
-                                    student_marks = StudentMark.objects.get(course=course_id, student=student.id, exam=exam.id)
-                                    subject = student_marks.subject_mark.get(subject_name=subject)
-                                    ctx_subjects.append({
-                                        'subject_id': subject.id if subject.id else '',
-                                        'subject': subject.subject_name.subject_name if subject.subject_name.subject_name else '',
-                                        'maximum': subject.subject_name.total_mark if subject.subject_name.total_mark else '',
-                                        'minimum': subject.subject_name.pass_mark if subject.subject_name.pass_mark else '',
-                                        'mark': subject.mark if subject.mark else '',
-                                        'status': subject.status if subject.status else '',
-                                    })
-                                except:
-                                    ctx_subjects.append({
-                                        'subject_id': subject.id if subject.id else '',
-                                        'subject': subject.subject_name,
-                                        'maximum':str(subject.total_mark),
-                                        'minimum':subject.pass_mark,
-                                        'mark': '',
-                                        'status': ''
-                                    })
-                            ctx_exam_marks.append({
-                                'exam_name': exam.exam_name,
-                                'id': exam.id,
-                                'subjects': ctx_subjects,                                
-                                })
-                            ctx_subjects = []
-                        except:
-                            for subject in exam.subjects.all():
-                                ctx_subjects.append({
-                                    'subject_id': subject.id if subject.id else '',
-                                    'subject': subject.subject_name,
-                                    'maximum':str(subject.total_mark),
-                                    'minimum':subject.pass_mark,
-                                    'mark': '',
-                                    'status': ''
-                                })
-                            ctx_exam_marks.append({
-                                'exam_name': exam.exam_name,                            
-                                'id' : exam.id,                                
-                                'subjects': ctx_subjects,                               
-                            })
-                            ctx_subjects = []
-                    ctx_student.append({
-                        'student_id': student.id,
-                        'student_name': student.student_name,
-                        'roll_no': student.roll_number,
-                        'exam_marks': ctx_exam_marks,                
-                        })
-                    ctx_exam_marks = []
+                exams = Exam.objects.filter(course=course_id, semester=semester_id)
+                for exam in exams:
+                    exams = exam.get_json_data()
+                print exams
                 res = {
                     'result': 'ok',
-                    'students': ctx_student,
+                    'exams': exams,
                 }       
         
             except Exception as ex:
@@ -310,3 +231,30 @@ class EditExamSchedule(View):
         return render(request, 'edit_exam_schedule.html', {
             'exam_schedule_id': exam_schedule_id
         })
+
+class QuestionPaper(View):
+
+    def get(self, request, *args, **kwargs):
+        questions_list = []
+        if request.is_ajax():
+            try:
+                questions = Question.objects.filter(exam=request.GET.get('exam', ''),subject=request.GET.get('subject', ''))
+                for question in questions:
+                    questions_list.append(question.get_json_data())
+                res = {
+                    'result': 'Ok',
+                    'questions': questions_list,
+                }
+            except Exception as ex:
+                res = {
+                    'result': 'error',
+                    'message': str(ex),
+                }
+
+            response = simplejson.dumps(res)
+        return HttpResponse(response, mimetype='application/json')
+
+class WriteExam(View):
+
+    def get(self, request, *args, **kwargs):
+        return render(request, 'write_exam.html', {})

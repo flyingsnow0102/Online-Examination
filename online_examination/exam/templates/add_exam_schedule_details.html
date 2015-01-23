@@ -13,54 +13,47 @@
             <div id="main-title">
 				<div class="alert alert-info" align="Center"><h4>Exam Creation</h4></div>
 			</div>
-			<form action="" id="" name="" method="post" class="">
+			<form action="" id="" name="" method="post" class="form-horizontal">
 				<div class="section_1">
-					
-					<div class="control">
-						<label> Course</label>  
+					<div class="col-xs-6 col-sm-6 col-md-6">
+						<div class="control">
+							<label> Course</label>  
+							<select name="course" ng-model="course" ng-change="get_semester() ">
+								<option value="">Select</option>
+								<option ng-repeat="course in courses" value="[[course.id]]" >[[course.course]]
+								</option>
+							</select>
+						</div>
+						
+						<div class="control">
+							<label> Semester</label>  
+							<select name="semester" ng-model="semester">
+								<option value="">Select</option>
+								<option ng-repeat="semester in semesters" value="[[semester.id]]"  >[[semester.semester]]
+								</option>
+							</select>
+						</div>
 					</div>
-					<div class="control">
-						<select name="course" ng-model="course" ng-change="get_semester() ">
-							<option value="">Select</option>
-							<option ng-repeat="course in courses" value="[[course.id]]" >[[course.course]]
-							</option>
-						</select>
+					<div class=" col-xs-6 col-sm-6 col-md-6">
+						<div class="control">
+							<label>Start Date</label>
+							<input type="text" name="start_date" id="start_date"value="" ng-model="start_date">
+						</div>
+						<div class="control">
+							<label>End Date</label> 
+							<input type="text" name="end_date" id="end_date"value="" ng-model="end_date">
+						</div>
 					</div>
-					
-					<div class="control">
-						<label> Semester</label>  
-					</div>
-					<div class="control">
-						<select name="semester" ng-model="semester">
-							<option value="">Select</option>
-							<option ng-repeat="semester in semesters" value="[[semester.id]]"  >[[semester.semester]]
-							</option>
-						</select>
-					</div>
-					<div class="control">
-						<label>Start Date</label>  
-					</div>
-					<div class="control">
-						<input type="text" name="start_date" id="start_date"value="" ng-model="start_date">
-					</div>
-					<div class="control">
-						<label>End Date</label>  
-					</div>
-					<div class="control">
-						<input type="text" name="end_date" id="end_date"value="" ng-model="end_date">
-					</div>
-					<div class="control">
-						<label>Exam Total</label> 
-					</div>
-					<div class="control">
-						<input type="text" name="exam_total" value="" ng-model="exam_total" ng-change=""> 
-					</div>
-					<div class="control">
-						<label>No.Subjects</label>
-					</div> 
-					<div class="control">
-						<input type="text" name="no_subjects" value="" ng-model="no_subjects" ng-change="add_subjects()"> 
-					</div>
+					<!-- <div class="col-md-6 col-sm-6"> -->
+						<div class="control">
+							<label>Exam Total</label> 
+							<input type="text" name="exam_total" value="" ng-model="exam_total" ng-change=""> 
+						</div>
+						<div class="control">
+							<label>No.Subjects</label>
+							<input type="text" name="no_subjects" value="" ng-model="no_subjects" ng-change="add_subjects()"> 
+						</div>
+					<!-- </div> -->
 					<label>Subjects</label>
 					<div class="control">
 						<table class="table stripped">
