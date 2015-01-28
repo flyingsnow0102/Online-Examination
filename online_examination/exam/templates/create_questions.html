@@ -103,6 +103,142 @@
 		</div>
 	</div>
 </div>
-		
+<!-- <div class="container">
+<div class="col-xs-12 col-lg-8">
+<div class="row otr-brdr">
+<div class="col-hd col-wrap">
+<h4>Create Questions</h4>
+</div>
+<div class="col-xs-12 col-wrap" >
+<form class="form-horizontal">
+<div class="form-group">
+<label for="inputEmail3" class="col-xs-12 control-label">Course</label>
+<div class="col-xs-12">
+<select class="form-control" id="sel1"name="course" ng-model="question_details.course" ng-options="course.id as course.course for course in courses" ng-change="get_semester()">
+<option value="">Select</option>
+</select>
+</div>
+</div>
+<div class="row" >
+<div class="col-xs-12" >
+<div class="row" >
+<div class="col-xs-12 col-lg-6">
+<div class="form-group">
+<label for="inputPassword3" class="col-xs-12 control-label">Semester / Part </label>
+<div class="col-xs-12">
+	<select class="form-control" id="sel1" name="semester" ng-model="question_details.semester" ng-options="semester.id as semester.semester for semester in semesters" ng-change="get_exams()">
+		<option value="">Select</option>
+	</select>
+</div>
+</div>
+</div>
+<div class="col-xs-12 col-lg-6">
+	<div class="form-group">
+		<label for="inputPassword3" class="col-xs-12 control-label">Exam</label>
+		<div class="col-xs-12">
+			<input type="text" name="exam_name" ng-model="exam_name" readonly>
+		</div>
+	</div>
+</div>
+</div>
+
+</div>
+<div class="col-xs-12 col-lg-6">
+<div class="form-group">
+<label for="inputPassword3" class="col-xs-12 control-label">Subject</label>
+<div class="col-xs-12">
+	<select name="subject" ng-model="question_details.subject" ng-options="subject.subject_id as subject.subject for subject in subjects">
+		<option value="">Select</option>	
+	</select>
+</div>
+</div>
+</div>
+<div class="col-xs-12" >
+<div class="row" >
+<div class="col-lg-10 col-xs-8">
+<div class="col-lt">
+<div class="col-xs-12 col-border">
+<p>Add Questions</p>
+</div>
+</div>
+</div>
+<div class="col-lg-2 col-xs-4 col-md-1">
+<div class="">
+
+<div class="col-xs-12">
+<span class="icon"><a href="#"><i class="fa fa-plus"  ng-click="add_questions()"></i></a></span>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="col-xs-12" >
+<div class="col-lg-12 col-bottom-box">
+<div class="form-group">
+<label for="inputEmail3" class="col-xs-12 control-label">Questions</label>
+<div class="col-xs-12">
+	
+<input class="form-control" name="" type="text" value="" placeholder="Questions"  ng-model="question.question">
+
+</div>
+</div>
+<div class="col-xs-12" >
+<div class="row" >
+<div class="col-lg-10 col-xs-8">
+<div class="col-lt">
+<div class="col-xs-12">
+
+<div class="row" >
+
+<div class="form-group">
+<label for="inputEmail3" class="control-label">Enter the Correct Answer</label>
+<input class="form-control" name="" type="text" value="" placeholder="Enter the Correct Answer">
+
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<div class="col-lg-2 col-xs-4 col-md-1">
+<div class="">
+
+<div class="col-xs-12">
+<span class="col-bottom-box-icon icon"><a href="#"><i class="fa fa-plus"></i></a></span>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<div class="col-xs-12 col-lg-6">
+<div class="row" >
+<div class="form-group">
+<label for="inputPassword3" class="col-xs-12 control-label">Marks </label>
+<div class="col-xs-12">
+<input class="form-control" name="" type="text" value="" placeholder="Marks">
+</div>
+</div>
+</div>
+</div>
+
+
+  
+  
+</div>
+</div>
+<div class="form-group">
+    <div class="col-sm-12 ">
+    <input name="" class="btn btn-primary questions-btn" type="button" value="Save and Continue" />
+    </div>
+  </div>
+</div>
+    
+</form>
+</div>
+</div>
+</div>		 -->
 
 {% endblock content %}

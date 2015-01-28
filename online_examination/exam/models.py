@@ -43,6 +43,9 @@ class Exam(models.Model):
             subjects_data.append({
                 'subject_id': subject.id if subject.id else '',
                 'subject': subject.subject_name if subject.subject_name else '',
+                'duration': subject.duration + '-' +subject.duration_parameter,
+                'duration_parameter': subject.duration_parameter,
+                'duration_no': subject.duration,
                 'total_mark': subject.total_mark if subject.total_mark else '',
                 'pass_mark': subject.pass_mark if subject.pass_mark else '',
             })
@@ -157,10 +160,12 @@ class StudentAnswer(models.Model):
 
 class AnswerSheet(models.Model):
 
+    is_attempted = models.BooleanField('Is attempted',default=False)
     student = models.ForeignKey(Student, null=True, blank=True)
     exam = models.ForeignKey(Exam, null=True, blank=True)
     subject = models.ForeignKey(Subject, null=True, blank=True)
     student_answer = models.ManyToManyField(StudentAnswer, null=True, blank=True)
+    is_completed = models.BooleanField('Is Completed',default=False)
 
     def __unicode__(self):
         return str(self.student.student_name) if self.student else 'Student'

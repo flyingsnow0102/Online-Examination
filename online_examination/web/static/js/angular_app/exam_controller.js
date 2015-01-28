@@ -562,16 +562,67 @@ function QuestionController($scope, $element, $http, $timeout, share, $location)
         return new Array(n);
     }
 }
+function calculate_endtime($scope, $http, duration_parameter, duration) {
+    var today=new Date();
+    var h=today.getHours();
+    var m=today.getMinutes();
+    var s=today.getSeconds();
+    
+    var end_time_hour = h;
+    var end_time_minutes = m;
+    if(duration_parameter == 'Hours'){
+        end_time_hour = parseFloat(duration) + parseFloat(end_time_hour);
+    }
+    else {
+        end_time_minutes = parseFloat(duration) + parseFloat(end_time_minutes);
+    }
+    var ampm = end_time_hour >= 12 ? 'pm' : 'am';
+    end_time_hour = end_time_hour % 12;
+    end_time_hour = end_time_hour ? end_time_hour : 12; // the hour '0' should be '12'
+    end_time_minutes = end_time_minutes < 10 ? '0'+end_time_minutes : end_time_minutes;
+    $scope.end_time = end_time_hour+":"+end_time_minutes+":"+s +''+ampm;
+}
+
+function startTime($scope, $http) {
+    var today=new Date();
+    var h=today.getHours();
+    var m=today.getMinutes();
+    var s=today.getSeconds();
+    m = checkTime(m);
+    s = checkTime(s);
+    var ampm = h >= 12 ? 'pm' : 'am';
+    h = h % 12;
+    h = h ? h : 12; // the hour '0' should be '12'
+    m = m < 10 ? '0'+m : m;
+    // document.getElementById('txt').innerHTML = h+":"+m+":"+s+''+ampm;
+    $scope.time_left = h+":"+m+":"+s+''+ampm;
+    // $('#txt').countdown({until: $scope.time_left, format: 'HMS'});
+    // var t = setTimeout(function(){startTime()},500);
+}
+
+function checkTime(i) {
+    if (i<10) {i = "0" + i};  // add zero in front of numbers < 10
+    return i;
+}
 function WriteExamController($scope, $element, $http, $timeout, share, $location)
-{    $scope.init = function(csrf_token)
+{    
+    $scope.init = function(csrf_token)
     {
         
         $scope.csrf_token = csrf_token;
         $scope.is_exam = false;
         $scope.answer = '';
+        var url = '/exam/write_exam/';
+        $http.get(url).success(function(data) {
+            $scope.student = data.student
+        }).error(function(data, status)
+        {
+            console.log(data || "Request failed");
+        });
         get_course_list($scope, $http);
         
     }
+
     $scope.get_semester = function(){
         $scope.edit_marks = false;
         $scope.display_marks = false;
@@ -607,11 +658,56 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
             console.log(data || "Request failed");
         });
     } 
-    $scope.get_question_paper = function(){
-        var url = '/exam/get_questions/?subject='+$scope.subject+'&exam='+$scope.exam;
+    $scope.get_question_paper = function(subject){
+        console.log(subject)
+        var url = '/exam/get_questions/?subject='+$scope.subject.subject_id+'&exam='+$scope.exam;
         $http.get(url).success(function(data) {
             $scope.questions = '';
+            $scope.exam_duration = subject.duration;
+            $scope.duration = subject.duration_no;
+            $scope.duration_parameter = subject.duration_parameter;
             $scope.questions = data.questions;
+            calculate_endtime($scope,$http,$scope.duration_parameter,$scope.duration);
+            startTime($scope, $http);
+            String.prototype.toHHMMSS = function () {
+                var sec_num = parseInt(this, 10); // don't forget the second parm
+                var hours = Math.floor(sec_num / 3600);
+                var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+                var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+                if (hours < 10) {
+                    hours = "0" + hours;
+                }
+                if (minutes < 10) {
+                    minutes = "0" + minutes;
+                }
+                if (seconds < 10) {
+                    seconds = "0" + seconds;
+                }
+                var time = hours + ':' + minutes + ':' + seconds;
+                return time;
+            }
+            if (($scope.duration_parameter != '') || ($scope.duration_parameter !=undefined) && ($scope.duration_parameter=='Hours'))
+                
+                var count = String($scope.duration*3600); // it's 00:01:02
+            else if(($scope.duration_parameter != '') || ($scope.duration_parameter !=undefined) && ($scope.duration_parameter=='Minutes'))
+                var count = String($scope.duration*60)
+            var counter = setInterval(timer, 1000);
+
+            function timer() {
+
+
+                // console.log(count);
+
+                if (parseInt(count) <= 0) {
+                    clearInterval(counter);
+                    return;
+                }
+                var temp = count.toHHMMSS();
+                count = (parseInt(count) - 1).toString();
+
+                $('#txt').html(temp);
+            }
             paginate($scope.questions, $scope);
         }).error(function(data, status)
         {

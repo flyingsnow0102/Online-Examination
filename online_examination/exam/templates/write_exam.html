@@ -39,7 +39,7 @@
 		<label> Subject </label>  
 	</div>
 	<div>
-		<select name="subject" ng-model="subject" ng-options="subject.subject_id as subject.subject for subject in subjects" ng-change="get_question_paper()">
+		<select name="subject" ng-model="subject" ng-options="subject_1 as subject_1.subject for subject_1 in subjects" ng-change="get_question_paper(subject)">
 			<option value="">Select</option>	
 		</select>
 	</div>
@@ -49,6 +49,18 @@
       	<div class="col-hd col-wrap">
         	<h4>Write Exam</h4>
     	</div>
+    	<div class="form-group">
+            <label for="inputPassword3" class="col-sm-4 control-label"> Hi</label>[[student.student_name]]
+        </div>
+        <div class="form-group">
+            <label for="inputPassword3" class="col-sm-4 control-label"> Registration No</label>[[student.registration_no]]
+        </div>
+        <div class="form-group">
+            <label for="inputPassword3" class="col-sm-4 control-label"> Hall Ticket No</label>[[student.hall_ticket_no]]
+        </div>
+        <div><label>Exam Duration: [[exam_duration]]</label></div>
+        <div><label>Your Time Ends At: [[end_time]]</label></div>
+        <div>Time Left: <div id="txt"></div></div>
         <div class="col-xs-12 col-hd-bottom">
             <div class="row">
             	<div ng-repeat="question in questions">
@@ -60,9 +72,6 @@
 							<div>
 								<label> [[choice.choice]]</label>  
 							</div>
-							<!-- <div>
-								<input type="radio" ng-model="answer">
-							</div> -->
 						</li>
 					</ol>
 					<ol type="A">
@@ -73,6 +82,13 @@
 						</li>
 					</ol>
             	</div>
+            	<div class="form-group">
+		            <label for="inputPassword3" class="col-sm-4 control-label"></label>
+		            <div class="col-sm-6">
+		              <p class="error_message"> [[validation_error]] </p>
+		              <input name="" class="btn btn-primary"ng-click="" type="button" value="Save and Continue" />
+	            	</div>
+	          	</div>
             	<div ng-show="questions.length > 0">
 					{% include 'pagination_div.html' %}
 				</div>

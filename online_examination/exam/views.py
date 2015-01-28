@@ -192,6 +192,7 @@ class GetExams(View):
                 print "Exception == ", str(ex),
                 res = {
                     'result': 'error',
+                    'message': str(ex),
                 }
             response = simplejson.dumps(res)
             return HttpResponse(response, mimetype='application/json')
@@ -257,4 +258,37 @@ class QuestionPaper(View):
 class WriteExam(View):
 
     def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            try:
+                student = Student.objects.get(user=request.user)
+                student_details = student.get_json_data()
+                res = {
+                    'result': 'Ok',
+                    'student': student_details,
+                }
+            except Exception as ex:
+                res = {
+                        'result': 'error',
+                        'message': str(ex),
+                    }
+            response = simplejson.dumps(res)
+            return HttpResponse(response, mimetype='application/json')
         return render(request, 'write_exam.html', {})
+
+    def post(self, request, *args, **kwargs):
+
+        if request.is_ajax():
+            answer_sheet_details =  ast.literal_eval(request.POST['answer_sheet'])
+            try:
+                answer_sheet = AnswerSheet()
+                answer_sheet_data = answer_sheet.set_attributes(answer_sheet_details)
+                res = {
+                    'result': 'Ok',
+                }
+            except Exception as ex:
+                res = {
+                    'result': 'error',
+                    'message': str(ex),
+                }
+        response = simplejson.dumps(res)
+        return HttpResponse(response, mimetype='application/json')
