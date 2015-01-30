@@ -101,7 +101,12 @@ body {
 	margin: auto;	
 	height: 100%;
 }
-
+.col-lg-8{
+	width: 100% !important;
+}
+.form-horizontal .control-label {
+    text-align: left !important;
+}
 .col-wrap{ 
 	padding:10px;
 }
@@ -785,7 +790,7 @@ label.block{
 /********** Student Module **************/
 
 .search_students, .search_batch {
-	width: 35%;
+	width: 17%;
 	margin: auto;
 }
 .search_batch label{

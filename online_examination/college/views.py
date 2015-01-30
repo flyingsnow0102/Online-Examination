@@ -40,7 +40,12 @@ class ListCourse(View):
 class ListSemester(View):
     def get(self, request, *args, **kwargs):
 
-        semesters = Semester.objects.all()
+        
+        if request.user.is_superuser:
+            semesters = Semester.objects.all()
+        else:
+            student = Student.objects.get(user=request.user)
+            semesters = Semester.objects.filter(id=student.semester.id)
         ctx_semester_data = []
         status = 200
         if request.is_ajax():
@@ -291,8 +296,12 @@ class GetSemester(View):
         semester_list = []
         if request.is_ajax():
             try:
-                course = Course.objects.get(id=request.GET.get('id'))
-                semesters = course.semester.all()
+                if request.user.is_superuser:
+                    course = Course.objects.get(id=request.GET.get('id'))
+                    semesters = course.semester.all()
+                else:
+                    student = Student.objects.get(user=request.user)
+                    semesters = Semester.objects.filter(id=student.semester.id)
             except:
                 try:
                     semesters = Semester.objects.all()

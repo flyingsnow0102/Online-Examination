@@ -14,8 +14,7 @@
 								<tr>
 									<th> Exam Name </th>
 									<th> Course </th>
-									<th> Batch </th>
-									<th> Branch </th>
+									<th> Semester </th>
 									<th> Start Date </th>
 									<th> End Date </th>
 									<th> Exam Total </th>
@@ -24,8 +23,7 @@
 								<tr> 
 									<td> [[exam_schedule.exam_name]] </td>
 									<td> [[exam_schedule.course]] </td>
-									<td> [[exam_schedule.batch]] </td>
-									<td> [[exam_schedule.branch]] </td>
+									<td> [[exam_schedule.semester]] </td>
 									<td> [[exam_schedule.start_date]] </td>
 									<td> [[exam_schedule.end_date]] </td>
 									<td> [[exam_schedule.exam_total]] </td>
@@ -37,17 +35,13 @@
 							<table class="table stripped">
 								<tr>
 									<th>Subject</th>
-									<th>Date</th>
-									<th>Start time</th>
-									<th>End Time</th>
+									<th>Duration</th>
 									<th>Total Mark</th>
 									<th>Pass Mark</th>								
 								</tr>
-								<tr ng-repeat="subject in exam_schedule.subjects">
-									<td> [[subject.subject_name]] </td>
-									<td> [[subject.date]] </td>
-									<td> [[subject.start_time]] </td>
-									<td> [[subject.end_time]] </td>
+								<tr ng-repeat="subject in exam_schedule.subjects_data">
+									<td> [[subject.subject]] </td>
+									<td> [[subject.duration]] </td>
 									<td> [[subject.total_mark]] </td>
 									<td> [[subject.pass_mark]] </td>						
 								</tr>

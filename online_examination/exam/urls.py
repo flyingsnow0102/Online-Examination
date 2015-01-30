@@ -3,7 +3,7 @@ from django.conf.urls import patterns, url
 
 from exam.views import (ScheduleExam, ViewExamSchedule, EditExamSchedule, \
 	SaveExamSchedule, DeleteExamSchedule, CreateQuestion, GetExams, SaveMarks, CreateExam, \
-	WriteExam, QuestionPaper)
+	WriteExam, QuestionPaper, CreateAnswerSheet)
 
 urlpatterns = patterns('',	
 	url(r'^schedule_exam/$', ScheduleExam.as_view(), name='schedule_exam'),
@@ -17,4 +17,5 @@ urlpatterns = patterns('',
 	url(r'^create_exam/$', CreateExam.as_view(), name='create_exam'),
 	url(r'^write_exam/$', WriteExam.as_view(), name='write_exam'),
 	url(r'^get_questions/$', QuestionPaper.as_view(), name='get_questions'),
+	url(r'^create_answersheet/$', CreateAnswerSheet.as_view(), name='create_answersheet'),
 )

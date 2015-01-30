@@ -26,6 +26,7 @@ class ScheduleExam(View):
                     'id': exam.id,
                     'name': exam.exam_name,
                     'course': exam.course.course,
+                    'semester': exam.semester.semester,
                     'start_date': exam.start_date.strftime('%d/%m/%Y') if exam.start_date else '',
                     'end_date': exam.end_date.strftime('%d/%m/%Y') if exam.end_date else '',
                 })
@@ -129,35 +130,13 @@ class ViewExamSchedule(View):
 
     def get(self, request, *args, **kwargs):
         exam_schedule_id = kwargs['exam_schedule_id']
-        ctx_exam_schedule = []
-        ctx_subjects = []
         if request.is_ajax():
             try:
                 exam = Exam.objects.get(id = exam_schedule_id)
-                subjects = exam.subjects.all()
-                for subject in subjects:
-                    ctx_subjects.append({
-                        'subject_id': subject.id if subject.id else '',
-                    	'subject_name': subject.subject_name if subject.subject_name else '',
-                    	'duration': subject.duration if subject.duration else '',
-                        'duration_parameter': subject.duration_parameter if subject.duration_parameter else '',
-                        'total_mark': subject.total_mark if subject.total_mark else '',
-                        'pass_mark': subject.pass_mark if subject.pass_mark else '',
-                        'date': subject.date.strftime('%d/%m/%Y') if subject.date else '',
-                    })               
-                ctx_exam_schedule.append({
-                    
-                    'exam_name': exam.exam_name if exam.exam_name else '',
-                    'start_date': exam.start_date.strftime('%d/%m/%Y') if exam.start_date else '',
-                    'end_date': exam.end_date.strftime('%d/%m/%Y') if exam.end_date else '',
-                    'course': exam.course.course if exam.course.course else '',
-                    'exam_total': exam.exam_total if exam.exam_total else '',
-                    'no_subjects': exam.no_subjects if exam.no_subjects else '',
-                    'subjects':ctx_subjects,
-                })
+                exam_schedule = exam.get_json_data()
                 res = {
                     'result': 'ok',
-                    'exam_schedule': ctx_exam_schedule,
+                    'exam_schedule': exam_schedule,
                 }
                 status = 200
             except Exception as ex:
@@ -239,20 +218,47 @@ class QuestionPaper(View):
         questions_list = []
         if request.is_ajax():
             try:
+                answer_sheet = AnswerSheet.objetcs.get(student__user=request.user, exam=request.GET.get('exam', ''), subject=request.GET.get('subject', ''))
+                res = {
+                    'result': 'error',
+                    'message': 'Already Wrote the exam'
+                }
+                
+            except Exception as ex:
                 questions = Question.objects.filter(exam=request.GET.get('exam', ''),subject=request.GET.get('subject', ''))
+                print questions
                 for question in questions:
                     questions_list.append(question.get_json_data())
+                print questions_list
                 res = {
                     'result': 'Ok',
                     'questions': questions_list,
+                }
+
+            response = simplejson.dumps(res)
+        return HttpResponse(response, mimetype='application/json')
+
+class CreateAnswerSheet(View):
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            answer_sheet_details =  ast.literal_eval(request.POST['answer_details'])
+            try:
+                exam = Exam.objects.get(id=answer_sheet_details['exam'])
+                subject = Subject.objects.get(id=answer_sheet_details['subject'])
+                student = Student.objects.get(user=request.user)
+                answer_sheet = AnswerSheet.objects.create(student=student, exam=exam, subject=subject)
+                answer_sheet.is_attempted = True;
+                answer_sheet.save()
+                res = {
+                    'result': 'Ok',
                 }
             except Exception as ex:
                 res = {
                     'result': 'error',
                     'message': str(ex),
                 }
-
-            response = simplejson.dumps(res)
+                
+        response = simplejson.dumps(res)
         return HttpResponse(response, mimetype='application/json')
 
 class WriteExam(View):

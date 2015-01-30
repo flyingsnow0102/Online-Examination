@@ -62,7 +62,7 @@
         <div><label>Your Time Ends At: [[end_time]]</label></div>
         <div>Time Left: <div id="txt"></div></div>
         <div class="col-xs-12 col-hd-bottom">
-            <div class="row">
+            <div class="row" ng-show ="allow_exam">
             	<div ng-repeat="question in questions">
 					<div>
 						<label> [[$index+1]].[[question.question]]</label>  
@@ -86,7 +86,7 @@
 		            <label for="inputPassword3" class="col-sm-4 control-label"></label>
 		            <div class="col-sm-6">
 		              <p class="error_message"> [[validation_error]] </p>
-		              <input name="" class="btn btn-primary"ng-click="" type="button" value="Save and Continue" />
+		              <input name="" class="btn btn-primary"ng-click="save_answer_sheet()" type="button" value="Save and Continue" />
 	            	</div>
 	          	</div>
             	<div ng-show="questions.length > 0">

@@ -57,25 +57,9 @@ function ExamController($scope, $element, $http, $timeout, share, $location)
         $('#add_exam_schedule_details')[0].setStyle('display', 'none'); 
     }
 
-    // $scope.add_new_exam_schedule = function() {
-    //     $scope.start_date = $$('#start_date')[0].get('value');
-    //     $scope.end_date = $$('#end_date')[0].get('value');
-    //     $scope.hide_popup_windows();
-    //     $('#add_exam_schedule_details')[0].setStyle('display', 'block');
-    //     $scope.popup = new DialogueModelWindow({
-
-    //         'dialogue_popup_width': '68%',
-    //         'message_padding': '0px',
-    //         'left': '28%',
-    //         'top': '182px',
-    //         'height': 'auto',
-    //         'content_div': '#add_exam_schedule_details'
-    //     });
-
-    //     var height = $(document).height();
-    //     $scope.popup.set_overlay_height(height);
-    //     $scope.popup.show_content();
-    // }
+    $scope.add_new_exam_schedule = function() {
+       document.location.href ='/exam/create_exam/'; 
+    }
 
     $scope.add_subjects = function(){
         var subjects = $scope.no_subjects;
@@ -183,13 +167,13 @@ function ExamController($scope, $element, $http, $timeout, share, $location)
         $scope.url = '/exam/view_exam_schedule/' + $scope.exam_schedule_id+ '/';
         $http.get($scope.url).success(function(data)
         {
-            $scope.exam_schedule = data.exam_schedule[0];
+            $scope.exam_schedule = data.exam_schedule;
         }).error(function(data, status)
         {
             console.log(data || "Request failed");
         });
 
-        $scope.hide_popup_windows();
+        // $scope.hide_popup_windows();
         $('#exam_schedule_details_view')[0].setStyle('display', 'block');
         
         $scope.popup = new DialogueModelWindow({                
@@ -604,8 +588,25 @@ function checkTime(i) {
     if (i<10) {i = "0" + i};  // add zero in front of numbers < 10
     return i;
 }
-function WriteExamController($scope, $element, $http, $timeout, share, $location)
-{    
+function WriteExamController($scope, $element, $http, $timeout, share, $location){  
+    $scope.answer_details = {
+        'id': '',
+        'exam': '',
+        'subject': '',
+        'questions': [ 
+            {
+            'question': '',
+            'choices': [
+                    {
+                        'choice': '', 
+                        'chosen_answer': '',
+                    }
+                ],
+            }
+            
+        ],
+
+    }
     $scope.init = function(csrf_token)
     {
         
@@ -646,6 +647,7 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
         {   console.log(data.exams)
             if (data.result == 'ok') {
                 $scope.exam = data.exams.exam;
+                $scope.answer_details.exam = $scope.exam;
                 $scope.exam_name = data.exams.exam_name;
                 $scope.subjects = data.exams.subjects_data;
                 $scope.is_exam = true;
@@ -657,16 +659,61 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
         {
             console.log(data || "Request failed");
         });
-    } 
-    $scope.get_question_paper = function(subject){
-        console.log(subject)
-        var url = '/exam/get_questions/?subject='+$scope.subject.subject_id+'&exam='+$scope.exam;
-        $http.get(url).success(function(data) {
-            $scope.questions = '';
-            $scope.exam_duration = subject.duration;
-            $scope.duration = subject.duration_no;
-            $scope.duration_parameter = subject.duration_parameter;
-            $scope.questions = data.questions;
+    }
+    $scope.check_the_student = function(){
+        params = { 
+                'answer_details': angular.toJson($scope.answer_details),
+                "csrfmiddlewaretoken" : $scope.csrf_token
+            }
+            $http({
+                method: 'post',
+                url: "/exam/create_answersheet/",
+                data: $.param(params),
+                headers: {
+                    'Content-Type' : 'application/x-www-form-urlencoded'
+                }
+            }).success(function(data, status) {
+                if (data.result == 'error'){
+                    $scope.error_flag=true;
+                    $scope.message = data.message;
+                } else {
+                    $scope.allow_exam = true;
+                    $scope.get_answer_sheet();
+                }
+            }).error(function(data, success){
+                $scope.error_flag=true;
+                $scope.message = data.message;
+            });
+    }
+     $scope.save_answer_sheet = function(){
+        params = { 
+                'answer_details': angular.toJson($scope.answer_details),
+                "csrfmiddlewaretoken" : $scope.csrf_token
+            }
+            $http({
+                method: 'post',
+                url: "/exam/write_exam/",
+                data: $.param(params),
+                headers: {
+                    'Content-Type' : 'application/x-www-form-urlencoded'
+                }
+            }).success(function(data, status) {
+                if (data.result == 'error'){
+                    $scope.error_flag=true;
+                    $scope.message = data.message;
+                } else {
+
+                }
+            }).error(function(data, success){
+                $scope.error_flag=true;
+                $scope.message = data.message;
+            });
+    }
+    $scope.get_answer_sheet = function(){
+        if ($scope.allow_exam){
+            for(i=0;i<$scope.questions.length;i++)
+                $scope.answer_details.questions.push($scope.questions[i])
+            console.log($scope.answer_details)
             calculate_endtime($scope,$http,$scope.duration_parameter,$scope.duration);
             startTime($scope, $http);
             String.prototype.toHHMMSS = function () {
@@ -692,8 +739,6 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
                 var count = String($scope.duration*3600); // it's 00:01:02
             else if(($scope.duration_parameter != '') || ($scope.duration_parameter !=undefined) && ($scope.duration_parameter=='Minutes'))
                 var count = String($scope.duration*60)
-            var counter = setInterval(timer, 1000);
-
             function timer() {
 
 
@@ -708,7 +753,24 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
 
                 $('#txt').html(temp);
             }
+            var counter = setInterval(timer, 1000);
+
+            
             paginate($scope.questions, $scope);
+        }
+    }
+    $scope.get_question_paper = function(subject){
+        console.log(subject)
+        $scope.answer_details.subject = subject.subject_id;
+        var url = '/exam/get_questions/?subject='+$scope.subject.subject_id+'&exam='+$scope.exam;
+        $http.get(url).success(function(data) {
+            $scope.questions = '';
+            $scope.check_the_student();
+            $scope.exam_duration = subject.duration;
+            $scope.duration = subject.duration_no;
+            $scope.duration_parameter = subject.duration_parameter;
+            $scope.questions = data.questions;
+            
         }).error(function(data, status)
         {
             console.log(data || "Request failed");
