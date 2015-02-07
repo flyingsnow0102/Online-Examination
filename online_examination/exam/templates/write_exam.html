@@ -44,6 +44,7 @@
 		</select>
 	</div>
 </div>
+<p class="error_message"> [[validation_error]] </p>
 <div class="col-xs-12 col-lg-8" ng-show="is_exam">
     <div class="row otr-brdr">
       	<div class="col-hd col-wrap">
@@ -77,7 +78,7 @@
 					<ol type="A">
 						<li ng-repeat="choice in question.choices"> 
 							<div>
-								<input type="radio" ng-model="answer">
+								<input type="radio" value="[[choice.id]]" ng-model="question.chosen_answer">
 							</div>
 						</li>
 					</ol>

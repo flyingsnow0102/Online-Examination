@@ -52,7 +52,7 @@ class CreateQuestion(View):
     def get(self, request, *args, **kwargs):             
         return render(request, 'create_questions.html', {})
 
-class SaveMarks(View):
+class SaveQuestions(View):
     def post(self, request, *args, **kwargs):
         questions = ast.literal_eval(request.POST['question_details'])
         course = Course.objects.get(id = questions['course'])
@@ -218,7 +218,8 @@ class QuestionPaper(View):
         questions_list = []
         if request.is_ajax():
             try:
-                answer_sheet = AnswerSheet.objetcs.get(student__user=request.user, exam=request.GET.get('exam', ''), subject=request.GET.get('subject', ''))
+                answer_sheet = AnswerSheet.objects.get(student__user=request.user, exam=request.GET.get('exam', ''), subject=request.GET.get('subject', ''))
+                
                 res = {
                     'result': 'error',
                     'message': 'Already Wrote the exam'
@@ -226,10 +227,9 @@ class QuestionPaper(View):
                 
             except Exception as ex:
                 questions = Question.objects.filter(exam=request.GET.get('exam', ''),subject=request.GET.get('subject', ''))
-                print questions
+                
                 for question in questions:
                     questions_list.append(question.get_json_data())
-                print questions_list
                 res = {
                     'result': 'Ok',
                     'questions': questions_list,
@@ -247,10 +247,12 @@ class CreateAnswerSheet(View):
                 subject = Subject.objects.get(id=answer_sheet_details['subject'])
                 student = Student.objects.get(user=request.user)
                 answer_sheet = AnswerSheet.objects.create(student=student, exam=exam, subject=subject)
+                
                 answer_sheet.is_attempted = True;
                 answer_sheet.save()
                 res = {
                     'result': 'Ok',
+                    'id': answer_sheet.id,
                 }
             except Exception as ex:
                 res = {
@@ -284,17 +286,19 @@ class WriteExam(View):
     def post(self, request, *args, **kwargs):
 
         if request.is_ajax():
-            answer_sheet_details =  ast.literal_eval(request.POST['answer_sheet'])
-            try:
-                answer_sheet = AnswerSheet()
-                answer_sheet_data = answer_sheet.set_attributes(answer_sheet_details)
-                res = {
-                    'result': 'Ok',
-                }
-            except Exception as ex:
-                res = {
-                    'result': 'error',
-                    'message': str(ex),
-                }
+            answer_sheet_details =  ast.literal_eval(request.POST['answer_details'])
+            print "jskiioc"
+            # try:
+            answer_sheet = AnswerSheet.objects.get(id=answer_sheet_details['id'])
+            print "hjcos"
+            answer_sheet_data = answer_sheet.set_attributes(answer_sheet_details)
+            res = {
+                'result': 'Ok',
+            }
+            # except Exception as ex:
+            #     res = {
+            #         'result': 'error',
+            #         'message': str(ex),
+            #     }
         response = simplejson.dumps(res)
         return HttpResponse(response, mimetype='application/json')

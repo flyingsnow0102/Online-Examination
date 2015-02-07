@@ -257,7 +257,7 @@ function EditExamController($scope, $element, $http, $timeout, share, $location)
         $scope.url = '/exam/view_exam_schedule/' + $scope.exam_schedule_id+ '/';
         $http.get($scope.url).success(function(data)
         {
-            $scope.exam_schedule = data.exam_schedule[0];
+            $scope.exam_schedule = data.exam_schedule;
         }).error(function(data, status)
         {
             console.log(data || "Request failed");
@@ -594,15 +594,17 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
         'exam': '',
         'subject': '',
         'questions': [ 
-            {
-            'question': '',
-            'choices': [
-                    {
-                        'choice': '', 
-                        'chosen_answer': '',
-                    }
-                ],
-            }
+            // {
+            // 'question': '',
+            // 'choices': [
+            //         {
+            //             'choice': '', 
+            //         }
+            //     ],
+
+            // 'chosen_answer': '',
+            // }
+
             
         ],
 
@@ -650,7 +652,6 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
                 $scope.answer_details.exam = $scope.exam;
                 $scope.exam_name = data.exams.exam_name;
                 $scope.subjects = data.exams.subjects_data;
-                $scope.is_exam = true;
             } else {
                 $scope.validation_error = "No exam in this course";
                 $scope.is_exam = false;
@@ -675,14 +676,16 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
             }).success(function(data, status) {
                 if (data.result == 'error'){
                     $scope.error_flag=true;
-                    $scope.message = data.message;
+                    $scope.validation_error = data.message;
                 } else {
                     $scope.allow_exam = true;
+                    $scope.is_exam = true;
+                    $scope.answer_details.id = data.id;
                     $scope.get_answer_sheet();
                 }
             }).error(function(data, success){
                 $scope.error_flag=true;
-                $scope.message = data.message;
+                $scope.validation_error = data.message;
             });
     }
      $scope.save_answer_sheet = function(){
@@ -700,13 +703,13 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
             }).success(function(data, status) {
                 if (data.result == 'error'){
                     $scope.error_flag=true;
-                    $scope.message = data.message;
+                    $scope.validation_error = data.message;
                 } else {
-
+                    document.location.href = '/exam/write_exam/'
                 }
             }).error(function(data, success){
                 $scope.error_flag=true;
-                $scope.message = data.message;
+                $scope.validation_error = data.message;
             });
     }
     $scope.get_answer_sheet = function(){
@@ -765,11 +768,15 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
         var url = '/exam/get_questions/?subject='+$scope.subject.subject_id+'&exam='+$scope.exam;
         $http.get(url).success(function(data) {
             $scope.questions = '';
-            $scope.check_the_student();
-            $scope.exam_duration = subject.duration;
-            $scope.duration = subject.duration_no;
-            $scope.duration_parameter = subject.duration_parameter;
-            $scope.questions = data.questions;
+            if (data.result == 'Ok'){
+                $scope.check_the_student();
+                $scope.exam_duration = subject.duration;
+                $scope.duration = subject.duration_no;
+                $scope.duration_parameter = subject.duration_parameter;
+                $scope.questions = data.questions;
+            } else {
+                $scope.validation_error = data.message;
+            }
             
         }).error(function(data, status)
         {
@@ -783,4 +790,20 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
         return new Array(n);
     }
 
+}
+function ResultController($scope, $element, $http, $timeout, share, $location){  
+    $scope.init = function(csrf_token)
+    {
+        
+        $scope.csrf_token = csrf_token;
+    }
+    $scope.get_results = function(){
+        var url = '/web/get_student_result/?exam_resgistration_no='+$scope.exam_resgistration_no;
+        $http.get(url).success(function(data) {
+            $scope.exam_results = data.exam_results;
+        }).error(function(data, status)
+        {
+            console.log(data || "Request failed");
+        });
+    }
 }

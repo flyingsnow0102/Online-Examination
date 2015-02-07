@@ -5,6 +5,7 @@ from django.template import RequestContext
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
+from exam.models import *
 
 class Home(View):
     def get(self, request, *args, **kwargs):
@@ -74,3 +75,25 @@ class ResetPassword(View):
         else:
             user_type = user.userprofile_set.all()[0].user_type 
             return HttpResponseRedirect(reverse('users', kwargs={'user_type': user_type}))
+
+class ExamResult(View):
+
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            exam_results = []
+            exam_resgistration_no = request.GET.get('exam_resgistration_no')
+            answer_sheets = AnswerSheet.objects.filter(student__exam_resgistration_no=exam_resgistration_no)
+            for answer_sheet in answer_sheets:
+                exam_results.append(answer_sheet.get_json_data()) 
+            res = {
+                    'result': 'Ok',
+                    'exam_results': exam_results,
+                }
+            response = simplejson.dumps(res)
+            return HttpResponse(response, mimetype='application/json')
+        return render(request, 'exam_result.html', {}) 
+
+class StudentResults(View):
+    def get(self, request, *args, **kwargs):
+        
+        return render(request, 'student_results.html', {}) 

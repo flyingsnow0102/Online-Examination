@@ -1,0 +1,22 @@
+
+{% block title %}Exam Result{% endblock title %}
+{% block body_id %}result{% endblock %}
+
+{% block controller %}
+	ng-controller="ResultController" ng-init="init('{{csrf_token}}')"
+{% endblock controller %}
+<table ng-show="exam_results.length > 0" class="table table-striped">
+	<tr>
+		<th>#</th>
+		<th>Name</th>
+		<th>Exam</th>
+		<th>Result</th>
+	</tr>
+	<tr ng-repeat="result in exam_results">
+		<td> [[($index)]] </td>
+		<td>[[result.student_name]]</td>
+		<td>[[result.exam_name]]</td>
+		<td>[[result.status]]</td>
+	</tr>
+</table>
+{% block content %}
