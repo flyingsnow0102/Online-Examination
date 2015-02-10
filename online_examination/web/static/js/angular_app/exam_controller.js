@@ -515,7 +515,10 @@ function QuestionController($scope, $element, $http, $timeout, share, $location)
     $scope.add_questions = function(){
         $scope.question_details.questions.push({
             'question': '',
-            'choices': [],
+            'choices': [{
+                'choice': '', 
+                'correct_answer': false,
+            }],
             'mark': '',            
         });
     }
