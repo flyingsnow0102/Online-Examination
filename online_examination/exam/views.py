@@ -58,7 +58,8 @@ class SaveQuestions(View):
         course = Course.objects.get(id = questions['course'])
         semester = Semester.objects.get(id = questions['semester'])
         exam = Exam.objects.get(id = questions['exam'])
-        subject = Subject.objects.get(id = questions['subject'])
+        subject_details = questions['subject']
+        subject = Subject.objects.get(id = subject_details['subject_id'])
         total_mark = 0
         if request.is_ajax(): 
             # try:

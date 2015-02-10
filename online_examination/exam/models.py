@@ -10,7 +10,7 @@ class Subject(models.Model):
     duration = models.CharField('Duration', null=True, blank=True, max_length=200)
     duration_parameter = models.CharField('Duration Parameter', null=True, blank=True, max_length=200)
     total_mark = models.CharField('Total Mark', null=True, blank=True, max_length=200)
-    pass_mark = models.CharField('Pass Mark', null=True, blank=True, max_length=200)
+    pass_mark = models.DecimalField('Pass Mark', max_digits=14, decimal_places=2, default=0)
     
     def __unicode__(self):
         return str(self.subject_name)
@@ -187,7 +187,6 @@ class AnswerSheet(models.Model):
 
     def set_attributes(self, answer_data):   
         questions = answer_data['questions']
-        print "questions",questions
         total = 0
         for question_data in questions:
             student_answer = StudentAnswer()
@@ -198,17 +197,15 @@ class AnswerSheet(models.Model):
             student_answer.choosen_choice = choosen_choice
             student_answer.save()
             self.student_answers.add(student_answer)
-            print "hsjsj",question.choices.all().order_by('id')
             for correct_choice in question.choices.all().order_by('id'):
-                print "ksjs",correct_choice.correct_answer,correct_choice
                 if correct_choice.choice == choosen_choice.choice:
-                    print "hi"
                     if correct_choice.correct_answer == True:
                         student_answer.mark = question.mark
                         student_answer.is_correct = True
-                        total = total + student_answer.mark
+                        total = float(total) + float(student_answer.mark)
                         student_answer.save()
         self.total_mark = total
+        self.save()
         if self.total_mark >= self.subject.pass_mark:
             self.status = 'Pass'
         else:
@@ -223,18 +220,20 @@ class AnswerSheet(models.Model):
                     student_answers.append({
                         'id': student_answer.id,
                         'question': student_answer.question.id,
-                        'choosen_choice': student_answer.choice.id,
+                        'choosen_choice': student_answer.choosen_choice.id,
                         'is_correct':student_answer.is_correct if student_answer.is_correct else '',
                         'mark': student_answer.mark if student_answer.mark else '',
                         })
         answer_sheet_data = {
             'student': self.student.id,
-            'student_name': eslf.student.student_name,
+            'student_name': self.student.student_name,
             'exam': self.exam.id,
-            'status':self.status if self.status else '',
-            'total_mark': self.total_mark if self.total_mark else '',
+            'exam_name':self.exam.exam_name,
+            'status':self.status if self.status else 'Fail',
+            'total_mark': self.total_mark if self.total_mark else 0,
             'subject' : self.subject.id,
             'student_answers': student_answers,
             'is_completed': self.is_completed if self.is_completed else '',
             'is_attempted': self.is_attempted if self.is_attempted else '',
         }
+        return answer_sheet_data

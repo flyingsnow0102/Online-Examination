@@ -456,13 +456,22 @@ function QuestionController($scope, $element, $http, $timeout, share, $location)
     $scope.validate_marks = function() {        
         $scope.validation_error = '';
         $scope.flag = 0;
-       
+        var total = 0;
         if($scope.question_details.course == '' || $scope.question_details.course== undefined) {
             $scope.validation_error = "Please select course " ;
             return false;
         }else if($scope.question_details.semester == '' || $scope.question_details.semester== undefined) {
             $scope.validation_error = "Please select semester " ;
             return false;
+        }else{
+            for(i=0;i<$scope.question_details.questions.length;i++){
+                total = parseFloat(total) + parseFloat($scope.question_details.questions[i].mark);
+            }
+            console.log(total,$scope.subject_total_mark,$scope.question_details.questions)
+            if (total != $scope.subject_total_mark){
+                $scope.validation_error = "Please Check the mark for your questions as it exceeds the total mark of the exam " ;
+                return false;
+            }
         } return true;
     }
 
@@ -528,6 +537,7 @@ function QuestionController($scope, $element, $http, $timeout, share, $location)
         {   console.log(data.exams)
             if (data.result == 'ok') {
                 $scope.question_details.exam = data.exams.exam;
+                $scope.exam_total = data.exams.exam_total;
                 $scope.exam_name = data.exams.exam_name;
                 $scope.subjects = data.exams.subjects_data;
             } else {
@@ -538,7 +548,11 @@ function QuestionController($scope, $element, $http, $timeout, share, $location)
             console.log(data || "Request failed");
         });
     } 
-   
+    $scope.get_subject = function(){
+        $scope.subject_total_mark = $scope.question_details.subject.total_mark;
+        console.log($scope.subject_total_mark)
+
+    }
     $scope.select_page = function(page){
         select_page(page, $scope.students, $scope, 2);
     }
@@ -688,7 +702,23 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
                 $scope.validation_error = data.message;
             });
     }
-     $scope.save_answer_sheet = function(){
+    $scope.confirm_save = function(){
+        $('#confirm_save')[0].setStyle('display', 'block');
+
+        $scope.popup = new DialogueModelWindow({                
+            'dialogue_popup_width': '78%',
+            'message_padding': '0px',
+            'left': '28%',
+            'top': '182px',
+            'height': 'auto',
+            'content_div': '#confirm_save'
+        });
+        
+        var height = $(document).height();
+        $scope.popup.set_overlay_height(height);
+        $scope.popup.show_content();
+    }
+    $scope.save_answer_sheet = function(){
         params = { 
                 'answer_details': angular.toJson($scope.answer_details),
                 "csrfmiddlewaretoken" : $scope.csrf_token
@@ -705,7 +735,7 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
                     $scope.error_flag=true;
                     $scope.validation_error = data.message;
                 } else {
-                    document.location.href = '/exam/write_exam/'
+                    document.location.href = '/logout/'
                 }
             }).error(function(data, success){
                 $scope.error_flag=true;
@@ -737,23 +767,38 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
                 var time = hours + ':' + minutes + ':' + seconds;
                 return time;
             }
-            if (($scope.duration_parameter != '') || ($scope.duration_parameter !=undefined) && ($scope.duration_parameter=='Hours'))
-                
+            console.log($scope.duration_parameter,(($scope.duration_parameter != '') || ($scope.duration_parameter !=undefined)) && ($scope.duration_parameter=='Hours'))
+            if ((($scope.duration_parameter != '') || ($scope.duration_parameter !=undefined)) && ($scope.duration_parameter=='Hours'))
                 var count = String($scope.duration*3600); // it's 00:01:02
-            else if(($scope.duration_parameter != '') || ($scope.duration_parameter !=undefined) && ($scope.duration_parameter=='Minutes'))
+            else if((($scope.duration_parameter != '') || ($scope.duration_parameter !=undefined)) && ($scope.duration_parameter=='Minutes'))
                 var count = String($scope.duration*60)
             function timer() {
 
 
                 // console.log(count);
-
+                console.log(count)
                 if (parseInt(count) <= 0) {
                     clearInterval(counter);
                     return;
                 }
                 var temp = count.toHHMMSS();
                 count = (parseInt(count) - 1).toString();
-
+                if (count== 0){
+                    $('#show_warning')[0].setStyle('display', 'block');
+        
+                    $scope.popup = new DialogueModelWindow({                
+                        'dialogue_popup_width': '78%',
+                        'message_padding': '0px',
+                        'left': '28%',
+                        'top': '182px',
+                        'height': 'auto',
+                        'content_div': '#show_warning'
+                    });
+                    
+                    var height = $(document).height();
+                    $scope.popup.set_overlay_height(height);
+                    $scope.popup.show_content();
+                }
                 $('#txt').html(temp);
             }
             var counter = setInterval(timer, 1000);
@@ -761,6 +806,9 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
             
             paginate($scope.questions, $scope);
         }
+    }
+    $scope.close_popup = function(){
+        document.location.href = '/logout/';   
     }
     $scope.get_question_paper = function(subject){
         console.log(subject)
@@ -798,7 +846,7 @@ function ResultController($scope, $element, $http, $timeout, share, $location){
         $scope.csrf_token = csrf_token;
     }
     $scope.get_results = function(){
-        var url = '/web/get_student_result/?exam_resgistration_no='+$scope.exam_resgistration_no;
+        var url = '/student_result/?exam_resgistration_no='+$scope.exam_resgistration_no;
         $http.get(url).success(function(data) {
             $scope.exam_results = data.exam_results;
         }).error(function(data, status)

@@ -101,9 +101,10 @@ body {
 	margin: auto;	
 	height: 100%;
 }
-.col-lg-8{
+/*.col-lg-8{
 	width: 100% !important;
-}
+
+}*/
 .form-horizontal .control-label {
     text-align: left !important;
 }
@@ -800,4 +801,38 @@ label.block{
 .search_students label, .search_students input[type="text"]{
 	width: 50% !important;
 	float: left !important;
+}
+.col-lt {
+line-height: 32px;
+}
+.col-border {
+background: url(../images/line-bg.jpg) top left repeat-x;
+}
+.icon a {
+float: right;
+display: inline-block;
+color: #fff;
+background: #769ace;
+width: 35px;
+height: 35px;
+font-size: 16px;
+line-height: 35px;
+text-align: center;
+border-radius: 50%;
+}
+.col-border p {
+background: #FFFFFF;
+float: left;
+padding: 0 10px;
+}
+.col-bottom-box {
+background: #f5f5f5;
+border: 1px solid #d1d1d1;
+}
+.col-lt {
+line-height: 32px;
+}
+.col-bottom-box-icon {
+float: right;
+margin: 37px 0 0 0;
 }

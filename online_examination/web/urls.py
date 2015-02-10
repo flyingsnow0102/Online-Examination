@@ -12,5 +12,6 @@ urlpatterns = patterns('',
     url(r'logout/$', Logout.as_view(), name='logout'),
     
     url(r'^reset_password/(?P<user_id>\d+)/$', login_required(ResetPassword.as_view()), name="reset_password"),
+    url(r'^student_result/$', StudentResults.as_view(), name="student_result"),
 	
 )

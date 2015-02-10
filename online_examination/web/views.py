@@ -1,3 +1,5 @@
+import simplejson
+
 from django.views.generic.base import View
 from django.shortcuts import get_object_or_404, render
 from django.http import Http404, HttpResponse, HttpResponseRedirect
@@ -76,24 +78,21 @@ class ResetPassword(View):
             user_type = user.userprofile_set.all()[0].user_type 
             return HttpResponseRedirect(reverse('users', kwargs={'user_type': user_type}))
 
-class ExamResult(View):
 
+class StudentResults(View):
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
             exam_results = []
             exam_resgistration_no = request.GET.get('exam_resgistration_no')
-            answer_sheets = AnswerSheet.objects.filter(student__exam_resgistration_no=exam_resgistration_no)
+            answer_sheets = AnswerSheet.objects.filter(student__registration_no=exam_resgistration_no)
+            print answer_sheets
             for answer_sheet in answer_sheets:
                 exam_results.append(answer_sheet.get_json_data()) 
+            print exam_results
             res = {
                     'result': 'Ok',
                     'exam_results': exam_results,
                 }
             response = simplejson.dumps(res)
             return HttpResponse(response, mimetype='application/json')
-        return render(request, 'exam_result.html', {}) 
-
-class StudentResults(View):
-    def get(self, request, *args, **kwargs):
-        
         return render(request, 'student_results.html', {}) 

@@ -5,7 +5,10 @@
 {% block controller %}
 	ng-controller="WriteExamController" ng-init="init('{{csrf_token}}')"
 {% endblock controller %}
-
+{% block dialogue_popup %}
+  	{% include 'show_expiring_msg.html' %}
+  	{% include 'confirm_exit.html' %}
+{% endblock %}
 {% block content %}
  <div id="main-title">
 	<div class="alert alert-info" align="Center">
@@ -87,7 +90,7 @@
 		            <label for="inputPassword3" class="col-sm-4 control-label"></label>
 		            <div class="col-sm-6">
 		              <p class="error_message"> [[validation_error]] </p>
-		              <input name="" class="btn btn-primary"ng-click="save_answer_sheet()" type="button" value="Save and Continue" />
+		              <input name="" class="btn btn-primary"ng-click="confirm_save()" type="button" value="Save and Continue" />
 	            	</div>
 	          	</div>
             	<div ng-show="questions.length > 0">
