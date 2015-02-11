@@ -160,19 +160,19 @@ function EditStudentController($scope, $http, $element, $location, $timeout) {
         {
             
             $scope.student = data.student[0];
-            $scope.student_name = data.student[0].student_name;
-            $scope.registration_no = data.student[0].registration_no;
-            $scope.age = data.student[0].age;
-            $scope.hall_ticket_no = data.student[0].hall_ticket_no;
-            $scope.course_id = data.student[0].course_id;
-            $scope.semester_id = data.student[0].semester_id;
-            $scope.dob = data.student[0].dob;
-            $scope.address = data.student[0].address;
-            $scope.mobile_number = data.student[0].mobile_number;
-            $scope.email = data.student[0].email;
-            $scope.permanent_address = data.student[0].permanent_address;
-            $scope.photo_img = data.student[0].photo,
-            $scope.guardian_mobile_number = data.student[0].guardian_mobile_number;
+            // $scope.student_name = data.student[0].student_name;
+            // $scope.registration_no = data.student[0].registration_no;
+            // $scope.age = data.student[0].age;
+            // $scope.hall_ticket_no = data.student[0].hall_ticket_no;
+            // $scope.course = data.student[0].course_id;
+            // $scope.semester = data.student[0].semester;
+            // $scope.dob = data.student[0].dob;
+            // $scope.address = data.student[0].address;
+            // $scope.mobile_number = data.student[0].mobile_number;
+            // $scope.email = data.student[0].email;
+            // $scope.permanent_address = data.student[0].permanent_address;
+            // $scope.photo_img = data.student[0].photo,
+            // $scope.guardian_mobile_number = data.student[0].guardian_mobile_number;
         }).error(function(data, status)
         {
             console.log(data || "Request failed");
@@ -209,38 +209,38 @@ function EditStudentController($scope, $http, $element, $location, $timeout) {
         $scope.validation_error = '';
         $scope.dob = $$('#dob')[0].get('value');
 
-        if($scope.student_name == '' || $scope.student_name == undefined) {
+        if($scope.student.student_name == '' || $scope.student.student_name == undefined) {
             $scope.validation_error = "Please Enter the Name" ;
             return false;
         }   
-        else if($scope.course == '' || $scope.course == undefined) {
+        else if($scope.student.course == '' || $scope.student.course == undefined) {
             $scope.validation_error = "Please Enter Course";
             return false;
-        }else if($scope.semester == '' || $scope.semester == undefined) {
+        }else if($scope.student.semester == '' || $scope.student.semester == undefined) {
             $scope.validation_error = "Please Enter Semester";
             return false;
-        }else if($scope.dob == '' || $scope.dob == undefined) {
+        }else if($scope.student.dob == '' || $scope.student.dob == undefined) {
             $scope.validation_error = "Please Enter DOB";
             return false;
-        } else if($scope.address == '' || $scope.address == undefined) {
+        } else if($scope.student.address == '' || $scope.student.address == undefined) {
             $scope.validation_error = "Please Enter Address";
             return false;
-        } else if($scope.mobile_number == ''|| $scope.mobile_number == undefined){
+        } else if($scope.student.mobile_number == ''|| $scope.student.mobile_number == undefined){
             $scope.validation_error = "Please enter the Mobile Number";
             return false;
-        } else if(!(Number($scope.mobile_number)) || $scope.mobile_number.length > 15) {            
+        } else if(!(Number($scope.student.mobile_number)) || $scope.student.mobile_number.length > 15) {            
             $scope.validation_error = "Please enter a Valid Mobile Number";
             return false;
-        } else if(($scope.email != '' && $scope.email != undefined) && (!(validateEmail($scope.email)))){
+        } else if(($scope.student.email != '' && $scope.student.email != undefined) && (!(validateEmail($scope.student.email)))){
             $scope.validation_error = "Please enter a Valid Email Id";
             return false;
-        }  else if($scope.permanent_address == '' || $scope.permanent_address == undefined) {
+        }  else if($scope.student.permanent_address == '' || $scope.student.permanent_address == undefined) {
             $scope.validation_error = "Please Enter Permanent Address";
             return false;
-        } else if($scope.guardian_mobile_number == ''|| $scope.guardian_mobile_number == undefined){
+        } else if($scope.student.guardian_mobile_number == ''|| $scope.student.guardian_mobile_number == undefined){
             $scope.validation_error = "Please enter the Mobile Number";
             return false;
-        } else if(!(Number($scope.guardian_mobile_number)) || $scope.guardian_mobile_number.length > 15) {            
+        } else if(!(Number($scope.student.guardian_mobile_number)) || $scope.student.guardian_mobile_number.length > 15) {            
             $scope.validation_error = "Please enter a Valid Mobile Number";
             return false;
         }

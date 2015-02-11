@@ -224,40 +224,42 @@ class EditStudentDetails(View):
         return render(request, 'edit_student_details.html',context)
 
     def post(self, request, *args, **kwargs):
-
+        print "hi"
         student_id = kwargs['student_id']
         student = Student.objects.get(id = student_id)
+        print student,"jsjs"
         student_data = ast.literal_eval(request.POST['student'])
-        try:
-            course = Course.objects.get(course = student_data['course'])
-            student.course=course
-            semester = Semester.objects.get(semester = student_data['semester'])
-            student.semester=semester
-            student.student_name = student_data['student_name']
-            student.registration_no = student_data['registration_no']
-            student.address = student_data['address']
-            student.age = student_data['age']
-            student.hall_ticket_no = student_data['hall_ticket_no']
-            student.dob = datetime.strptime(student_data['dob'], '%d/%m/%Y')
-            student.address = student_data['address']
-            student.mobile_number = student_data['mobile_number']
-            student.email = student_data['email']
-            student.photo = request.FILES.get('photo_img', '')  
-            student.permanent_address = student_data['permanent_address']
-            student.guardian_mobile_number = student_data['guardian_mobile_number'] 
+        print student_data
+        # try:
+        course = Course.objects.get(id = student_data['course'])
+        student.course=course
+        semester = Semester.objects.get(id = student_data['semester'])
+        student.semester=semester
+        student.student_name = student_data['student_name']
+        student.registration_no = student_data['registration_no']
+        student.address = student_data['address']
+        student.age = student_data['age']
+        student.hall_ticket_no = student_data['hall_ticket_no']
+        student.dob = datetime.strptime(student_data['dob'], '%d/%m/%Y')
+        student.address = student_data['address']
+        student.mobile_number = student_data['mobile_number']
+        student.email = student_data['email']
+        student.photo = request.FILES.get('photo_img', '')  
+        student.permanent_address = student_data['permanent_address']
+        student.guardian_mobile_number = student_data['guardian_mobile_number'] 
 
-             
-            student.save()
-            res = {
-                'result': 'ok',
-            }
-            status = 200
-        except Exception as Ex:
-            res = {
-                'result': 'error',
-                'message': str(Ex)
-            }
-            status = 500
+         
+        student.save()
+        res = {
+            'result': 'ok',
+        }
+        status = 200
+        # except Exception as Ex:
+        #     res = {
+        #         'result': 'error',
+        #         'message': str(Ex)
+        #     }
+        #     status = 500
         response = simplejson.dumps(res)
         return HttpResponse(response, status=status, mimetype='application/json')
 

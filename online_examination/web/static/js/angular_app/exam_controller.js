@@ -666,6 +666,9 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
         {   console.log(data.exams)
             if (data.result == 'ok') {
                 $scope.exam = data.exams.exam;
+                $scope.student_name = data.exams.student_name,
+                $scope.registration_no = data.exams.registration_no;
+                $scope.hall_ticket_no = data.exams.hall_ticket_no;
                 $scope.answer_details.exam = $scope.exam;
                 $scope.exam_name = data.exams.exam_name;
                 $scope.subjects = data.exams.subjects_data;

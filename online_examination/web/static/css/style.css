@@ -76,9 +76,13 @@
 	min-width: 320px;
 }
 .login label {
-	width: 25%;
+	width: 35%;
 	float: left;
 	margin-left: 6px;
+	margin-bottom: 8px;
+}
+.login input{
+	margin-bottom: 10px;
 }
 .alert, .alert h4 {
 	color: #FFFFFF;
@@ -212,7 +216,6 @@ a {
     font-size: 16px;
     font-weight: bold;
     padding: 10px 0 10px 17px;
-    width: 95%;
 }
 .login {
 	border: 1px solid #ADD8E6;
@@ -763,7 +766,7 @@ label.block{
 	float: left;
 	font-weight: bold;
 	padding: 3px;
-	width: 20px;
+	/*width: 20px;*/
 }
 .clear {
 	clear: both;
@@ -835,4 +838,44 @@ line-height: 32px;
 .col-bottom-box-icon {
 float: right;
 margin: 37px 0 0 0;
+}
+label{font-weight: normal !important;}
+.answer label{font-weight: normal !important;}
+
+.textrt{
+	text-align: right;
+}
+.col-hd-bottom ol{
+	float: left;
+	width: 100%;
+}
+ol.answer{
+	float: left;
+	text-align: left;;
+	width: 100%;
+}
+ol.answer li{
+	float: left;
+	text-align: left;;
+	width: 100%;
+}
+ol.question{
+	float: left;
+	text-align: left;;
+	width: 50% !important;
+}
+ol.question li{
+	float: left;
+	text-align: left;;
+	width: 14%;
+}
+
+.textlt{
+	text-align: left;
+}
+#write_exam .col-hd-bottom{
+	padding: 30px;
+}
+.pagination{
+	float: right;
 }

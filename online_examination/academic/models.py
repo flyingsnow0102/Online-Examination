@@ -8,6 +8,7 @@ class Student(models.Model):
 
 	student_name = models.CharField('Student Name', null=True, blank=True, max_length=200)
 	user = models.ForeignKey(User, null=True, blank=True)
+	is_curently_logged_in = models.BooleanField('Currently Logged In',default=False)
 	student_password = models.CharField('Student Password', null=True, blank=True, max_length=200)
 	registration_no = models.CharField('Roll Number', null=True, blank=True, max_length=200 )
 	hall_ticket_no = models.CharField('Roll Number', null=True, blank=True, max_length=200 )

@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
 from exam.models import *
+from academic.models import Student
 
 class Home(View):
     def get(self, request, *args, **kwargs):
@@ -26,18 +27,28 @@ class Login(View):
         if request.POST.get('username', '') and request.POST.get('password',''):
             username = request.POST.get('username', '')
             user = authenticate(username=request.POST.get('username', ''), password=request.POST.get('password',''))
-           
+            if user and user.is_active:
+                login(request, user)
+            else:
+                context = {
+                    'message' : 'Username or password is incorrect'
+                }
+                return render(request, 'home.html',context)
         elif request.POST.get('registration_no','') and request.POST.get('hallticket_no','') and request.POST.get('password',''):
             username = request.POST.get('registration_no','') + request.POST.get('hallticket_no','')
             user = authenticate(username=username, password=request.POST.get('password',''))
+            
+            student = Student.objects.get(user=user)
+            if user and user.is_active and student.is_curently_logged_in==False:
+                login(request, user)
+                student.is_curently_logged_in = True
+                student.save()
+            else:
+                context = {
+                    'message' : 'Username or password is incorrect'
+                }
+                return render(request, 'home.html',context)
         
-        if user and user.is_active:
-            login(request, user)
-        else:
-            context = {
-                'message' : 'Username or password is incorrect'
-            }
-            return render(request, 'home.html',context)
         context = {
          'Success_message': 'Welcome '+username
         }
@@ -45,7 +56,13 @@ class Login(View):
 
 class Logout(View):
     def get(self,request,*args,**kwargs):
-        logout(request)
+        if not request.user.is_superuser:
+            student = Student.objects.get(user=request.user)
+            student.is_curently_logged_in = False
+            student.save()
+            logout(request)
+        else:
+            logout(request)
         return HttpResponseRedirect(reverse('home'))
 
 class ResetPassword(View):

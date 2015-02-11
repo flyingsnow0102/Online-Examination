@@ -162,6 +162,12 @@ class GetExams(View):
                 exams = Exam.objects.filter(course=course_id, semester=semester_id)
                 for exam in exams:
                     exams = exam.get_json_data()
+                    student = Student.objects.get(user=request.user)
+                    exams.append({
+                        'student_name':student.student_name,
+                        'registration_no':student.registration_no,
+                        'hall_ticket_no':student.hall_ticket_no,
+                        })
                 print exams
                 res = {
                     'result': 'ok',
