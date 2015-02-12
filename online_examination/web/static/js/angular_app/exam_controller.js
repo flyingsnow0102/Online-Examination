@@ -265,7 +265,7 @@ function EditExamController($scope, $element, $http, $timeout, share, $location)
     }
     $scope.attach_date_picker = function() {   
         if(!$scope.attached_date_picker)     {
-            for(i=0; i<$scope.exam_schedule.subjects.length; i++){
+            for(i=0; i<$scope.exam_schedule.subjects_data.length; i++){
                 var id_name = '#';
                 id_name = id_name + 'subject_date_'+i;
                 new Picker.Date($$(id_name), {
@@ -283,12 +283,6 @@ function EditExamController($scope, $element, $http, $timeout, share, $location)
         if($scope.exam_schedule.exam_name == '' || $scope.exam_schedule.exam_name == undefined) {
             $scope.validation_error = "Please Enter a exam name ";
             return false;
-        }else if($scope.exam_schedule.course == '' || $scope.exam_schedule.course == undefined) {
-            $scope.validation_error = "Please Select a course ";
-            return false;
-        }else if($scope.exam_schedule.batch == '' || $scope.exam_schedule.batch == undefined) {
-            $scope.validation_error = "Please Select a batch name";
-            return false;
         }else if($scope.exam_schedule.start_date == '' || $scope.exam_schedule.start_date == undefined) {
             $scope.validation_error = "Please Select a start date";
             return false;
@@ -300,24 +294,21 @@ function EditExamController($scope, $element, $http, $timeout, share, $location)
             $scope.validation_error = "Please Enter no of subjects";
             return false;
         }else if($scope.exam_schedule.no_subjects > 0){
-            for(var i=0;i<$scope.exam_schedule.subjects.length;i++){
-                if($scope.exam_schedule.subjects[i].subject_name == '' || $scope.exam_schedule.subjects[i].subject_name == undefined) {
+            for(var i=0;i<$scope.exam_schedule.subjects_data.length;i++){
+                if($scope.exam_schedule.subjects_data[i].subject_name == '' || $scope.exam_schedule.subjects_data[i].subject_name == undefined) {
                     $scope.validation_error = "Please Enter  subject name";
                     return false;
-                }else if($scope.subjects[i].duration == '' || $scope.subjects[i].duration == undefined) {
+                }else if($scope.exam_schedule.subjects_data[i].duration == '' || $scope.exam_schedule.subjects_data[i].duration == undefined) {
                     $scope.validation_error = "Please Enter duration" ;
                     return false;
-                }else if($scope.subjects[i].duration_parameter == '' || $scope.subjects[i].duration_parameter == undefined) {
+                }else if($scope.exam_schedule.subjects_data[i].duration_parameter == '' || $scope.exam_schedule.subjects_data[i].duration_parameter == undefined) {
                     $scope.validation_error = "Please Enter hours or minutes" ;
                     return false;
-                }else if($scope.exam_schedule.subjects[i].total_mark == '' || $scope.exam_schedule.subjects[i].total_mark == undefined || !Number($scope.exam_schedule.subjects[i].total_mark)) {
+                }else if($scope.exam_schedule.subjects_data[i].total_mark == '' || $scope.exam_schedule.subjects_data[i].total_mark == undefined || !Number($scope.exam_schedule.subjects_data[i].total_mark)) {
                     $scope.validation_error = "Please Enter total marks" ;
                     return false;
-                }else if($scope.exam_schedule.subjects[i].pass_mark == '' || $scope.exam_schedule.subjects[i].pass_mark == undefined || !Number($scope.exam_schedule.subjects[i].pass_mark)) {
+                }else if($scope.exam_schedule.subjects_data[i].pass_mark == '' || $scope.exam_schedule.subjects_data[i].pass_mark == undefined || !Number($scope.exam_schedule.subjects_data[i].pass_mark)) {
                     $scope.validation_error = "Please Enter pass mark" ;
-                    return false;
-                }else if($scope.exam_schedule.subjects[i].date == '' || $scope.exam_schedule.subjects[i].date == undefined) {
-                    $scope.validation_error = "Please Select a subject date" ;
                     return false;
                 }
             }
@@ -325,9 +316,7 @@ function EditExamController($scope, $element, $http, $timeout, share, $location)
         return true;   
     }
     $scope.save_exam_schedule = function() {
-        for(var i=0;i<$scope.exam_schedule.subjects.length;i++){
-            $scope.exam_schedule.subjects[i].date = $$('#subject_date_'+i)[0].get('value');
-        }
+        
         $scope.exam_schedule.start_date = $$('#start_date')[0].get('value');
         $scope.exam_schedule.end_date = $$('#end_date')[0].get('value');
         if($scope.validate_exam_schedule()) {            
@@ -340,7 +329,7 @@ function EditExamController($scope, $element, $http, $timeout, share, $location)
                 'end_date': $scope.exam_schedule.end_date,
                 'exam_total': $scope.exam_schedule.exam_total,
                 'no_subjects': $scope.exam_schedule.no_subjects,                   
-                'subjects': angular.toJson($scope.exam_schedule.subjects),
+                'subjects': angular.toJson($scope.exam_schedule.subjects_data),
                 "csrfmiddlewaretoken" : $scope.csrf_token
             }
             $http({
@@ -364,28 +353,26 @@ function EditExamController($scope, $element, $http, $timeout, share, $location)
         }
     }
     $scope.add_subject = function(){
-        $scope.exam_schedule.subjects.push({
-            "subject_id": "", 
-            "subject_name": "", 
-            "pass_mark": "", 
-            "total_mark": "", 
-            "end_time": "", 
-            "date": "", 
-            "start_time": ""
+        $scope.exam_schedule.subjects_data.push({
+            'subject_name': '',
+            'duration': '', 
+            'duration_parameter': '',
+            'total_mark': '',
+            'pass_mark': '',
         })
         $scope.attached_date_picker = false;
         $scope.attach_date_picker();
         $scope.exam_schedule.no_subjects = $scope.exam_schedule.no_subjects + 1;
     }
     $scope.remove_subject = function(subject){
-        index = $scope.exam_schedule.subjects.indexOf(subject);
-        $scope.exam_schedule.subjects.splice(index, 1);
+        index = $scope.exam_schedule.subjects_data.indexOf(subject);
+        $scope.exam_schedule.subjects_data.splice(index, 1);
         $scope.exam_schedule.no_subjects = $scope.exam_schedule.no_subjects - 1;
     }
     $scope.calculate_total_marks = function(){
         var total = 0;
-        for(var i=0; i<$scope.exam_schedule.subjects.length; i++) {
-            total = total + parseFloat($scope.exam_schedule.subjects[i].total_mark);
+        for(var i=0; i<$scope.exam_schedule.subjects_data.length; i++) {
+            total = total + parseFloat($scope.exam_schedule.subjects_data[i].total_mark);
         }
         $scope.exam_schedule.exam_total = total;
     }    
@@ -661,7 +648,7 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
         $scope.validation_error = "";
         $scope.exam_name = '';
         $scope.subjects = '';    
-        $scope.url = '/exam/get_exam/'+ $scope.course+ '/'+ $scope.semester+ '/';
+        $scope.url = '/exam/get_exam/'+ $scope.course+ '/'+ $scope.semester+ '/?from='+'write_exam';
         $http.get($scope.url).success(function(data)
         {   console.log(data.exams)
             if (data.result == 'ok') {
@@ -824,7 +811,7 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
             $scope.questions = '';
             if (data.result == 'Ok'){
                 $scope.check_the_student();
-                $scope.exam_duration = subject.duration;
+                $scope.exam_duration = subject.Duration;
                 $scope.duration = subject.duration_no;
                 $scope.duration_parameter = subject.duration_parameter;
                 $scope.questions = data.questions;

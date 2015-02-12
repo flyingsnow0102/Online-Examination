@@ -35,6 +35,7 @@ function save_new_student($http, $scope) {
             'hall_ticket_no': $scope.hall_ticket_no,
             'course': $scope.course,
             'semester': $scope.semester,
+            'source_of_information':$scope.source_of_information,
             'dob': $scope.dob,
             'address': $scope.address,
             'mobile_number': $scope.mobile_number,
@@ -82,6 +83,7 @@ function reset_student($scope) {
     $scope.roll_number = '';
     $scope.course = '';
     $scope.batch = '';
+    $scope.source_of_information = '';
     $scope.semester = '';
     $scope.qualified_exam = '';
     $scope.technical_qualification = '';
@@ -160,19 +162,6 @@ function EditStudentController($scope, $http, $element, $location, $timeout) {
         {
             
             $scope.student = data.student[0];
-            // $scope.student_name = data.student[0].student_name;
-            // $scope.registration_no = data.student[0].registration_no;
-            // $scope.age = data.student[0].age;
-            // $scope.hall_ticket_no = data.student[0].hall_ticket_no;
-            // $scope.course = data.student[0].course_id;
-            // $scope.semester = data.student[0].semester;
-            // $scope.dob = data.student[0].dob;
-            // $scope.address = data.student[0].address;
-            // $scope.mobile_number = data.student[0].mobile_number;
-            // $scope.email = data.student[0].email;
-            // $scope.permanent_address = data.student[0].permanent_address;
-            // $scope.photo_img = data.student[0].photo,
-            // $scope.guardian_mobile_number = data.student[0].guardian_mobile_number;
         }).error(function(data, status)
         {
             console.log(data || "Request failed");

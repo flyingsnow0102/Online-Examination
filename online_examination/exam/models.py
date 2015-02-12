@@ -37,23 +37,35 @@ class Exam(models.Model):
         verbose_name = 'Exam'
         verbose_name_plural = 'Exam'
 
-    def get_json_data(self):
+    def get_json_data(self, x=None):
         subjects_data = []
         for subject in self.subjects.all():
-            subjects_data.append({
+            subject_dict = {
                 'subject_id': subject.id if subject.id else '',
                 'subject': subject.subject_name if subject.subject_name else '',
-                'duration': subject.duration + '-' +subject.duration_parameter,
+                'subject_name' : subject.subject_name if subject.subject_name else '',
+                'Duration': subject.duration + '-' +subject.duration_parameter,
+                'duration': subject.duration,
                 'duration_parameter': subject.duration_parameter,
                 'duration_no': subject.duration,
                 'total_mark': subject.total_mark if subject.total_mark else '',
                 'pass_mark': subject.pass_mark if subject.pass_mark else '',
-            })
+            }
+            question = Question.objects.filter(exam__id=self.id,subject__id=subject.id)
+            question = question[0] if question.count() > 0 else None
+            if x:
+                if question:
+                    subjects_data.append(subject_dict)
+            else:
+                subjects_data.append(subject_dict) 
+            
         exam_data = {
             'exam_name':self.exam_name,
             'exam': self.id,
-            'course': self.course.course,
-            'semester': self.semester.semester,
+            'course': self.course.id,
+            'semester': self.semester.id,
+            'course_name': self.course.course,
+            'semester_name': self.semester.semester,
             'start_date': self.start_date.strftime('%d/%m/%Y') ,
             'end_date': self.end_date.strftime('%d/%m/%Y') ,
             'no_subjects': self.no_subjects,

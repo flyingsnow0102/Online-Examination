@@ -78,21 +78,21 @@
             <div class="col-sm-2">
             <div class="checkbox">
                 <label>
-                  <input type="checkbox">Newspaper
+                  <input type="radio" ng-model="student.source_of_information" value="Newspaper" >Newspaper
                 </label>
               </div>
             </div>
             <div class="col-sm-2">
             <div class="checkbox">
                 <label>
-                  <input type="checkbox">Ad
+                  <input type="radio" ng-model="student.source_of_information" value="Ad">Ad
                 </label>
               </div>
             </div>
             <div class="col-sm-2">
             <div class="checkbox">
                 <label>
-                  <input type="checkbox">Website
+                  <input type="radio" ng-model="student.source_of_information" value="Website">Website
                 </label>
               </div>
             </div>
@@ -102,7 +102,7 @@
             <div class="col-sm-6">
               <select name="course" ng-model="student.course" ng-change="get_semester() ">
                   <option value="">Select</option>
-                  <option ng-repeat="course in courses" ng-selected="course.id==student.course"value="[[course.id]]" >[[course.course]]
+                  <option ng-repeat="course in courses" ng-selected="course.id==student.course_id"value="[[course.id]]" >[[course.course]]
                   </option>
               </select>
             </div>
@@ -110,9 +110,11 @@
           <div class="form-group">
             <label for="inputPassword3" class="col-sm-4 control-label">Semester </label>
             <div class="col-sm-6">
-              <select name="semester" ng-model="student.semester" ng-selected="semester.id==student.semester" ng-options="semester.id as semester.semester for semester in semesters" ng-change="get_exams()">
-                    <option value="">Select</option>
-                  </select>
+              <select name="semester" ng-model="student.semester">
+                  <option value="">Select</option>
+                  <option ng-repeat="semester in semesters" ng-selected="semester.id==student.semester"value="[[semester.id]]" >[[semester.semester]]
+                  </option>
+                </select>
             </div>
           </div>
           <div class="form-group">

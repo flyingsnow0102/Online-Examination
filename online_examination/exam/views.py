@@ -161,9 +161,13 @@ class GetExams(View):
             try:
                 exams = Exam.objects.filter(course=course_id, semester=semester_id)
                 for exam in exams:
-                    exams = exam.get_json_data()
+                    if request.GET.get('from', '') == 'write_exam':
+                        exams = exam.get_json_data('x')
+                    else:
+                        exams = exam.get_json_data()
+
                     student = Student.objects.get(user=request.user)
-                    exams.append({
+                    exams.update({
                         'student_name':student.student_name,
                         'registration_no':student.registration_no,
                         'hall_ticket_no':student.hall_ticket_no,
@@ -203,16 +207,24 @@ class EditExamSchedule(View):
         })
 
     def post(self, request, *args, **kwargs):
-        
-        exam_schedule_id = kwargs['exam_schedule_id']
-        exam = Exam.objects.get(id=exam_schedule_id)
-        exam.subjects = []
-        exam.save()
-        save_exam_schedule_details(exam, request)
         if request.is_ajax():
-            res = {
-                'result': 'Ok',
-            }
+            current_date = datetime.now().date()
+            if exam.start_date < current_date:
+                exam_schedule_id = kwargs['exam_schedule_id']
+                exam = Exam.objects.get(id=exam_schedule_id)
+                exam.subjects = []
+                exam.save()
+            
+                save_exam_schedule_details(exam, request)
+                res = {
+                    'result': 'Ok',
+                }
+            else:
+                res = {
+                    'result': 'error',
+                    'message': 'You cannot edit exam schedule, as the exam is scheduled today'
+                }
+            
             response = simplejson.dumps(res)
             return HttpResponse(response, mimetype='application/json')
         return render(request, 'edit_exam_schedule.html', {
@@ -224,23 +236,39 @@ class QuestionPaper(View):
     def get(self, request, *args, **kwargs):
         questions_list = []
         if request.is_ajax():
-            try:
-                answer_sheet = AnswerSheet.objects.get(student__user=request.user, exam=request.GET.get('exam', ''), subject=request.GET.get('subject', ''))
-                
+            current_date = datetime.now().date()
+               
+            exam = Exam.objects.get(id=request.GET.get('exam', ''))
+            print current_date,exam.start_date >= current_date and exam.end_date <= current_date,exam.start_date,exam.end_date
+            if exam.start_date <= current_date and exam.end_date >= current_date:
+                try:
+                    
+                    answer_sheet = AnswerSheet.objects.get(student__user=request.user, exam=request.GET.get('exam', ''), subject=request.GET.get('subject', ''))
+                    res = {
+                        'result': 'error',
+                        'message': 'Already Wrote the exam'
+                    }
+                    
+                except Exception as ex:
+                    try:
+                        questions = Question.objects.filter(exam=request.GET.get('exam', ''),subject=request.GET.get('subject', ''))
+                        
+                        for question in questions:
+                            questions_list.append(question.get_json_data())
+                        res = {
+                            'result': 'Ok',
+                            'questions': questions_list,
+                        }
+                    except:
+                        res = {
+                        'result': 'error',
+                        'message': 'No questions found for this subject'
+                        }
+            else:
                 res = {
-                    'result': 'error',
-                    'message': 'Already Wrote the exam'
-                }
-                
-            except Exception as ex:
-                questions = Question.objects.filter(exam=request.GET.get('exam', ''),subject=request.GET.get('subject', ''))
-                
-                for question in questions:
-                    questions_list.append(question.get_json_data())
-                res = {
-                    'result': 'Ok',
-                    'questions': questions_list,
-                }
+                        'result': 'error',
+                        'message': 'You are late to attempt this exam'
+                    }
 
             response = simplejson.dumps(res)
         return HttpResponse(response, mimetype='application/json')
@@ -294,10 +322,8 @@ class WriteExam(View):
 
         if request.is_ajax():
             answer_sheet_details =  ast.literal_eval(request.POST['answer_details'])
-            print "jskiioc"
             # try:
             answer_sheet = AnswerSheet.objects.get(id=answer_sheet_details['id'])
-            print "hjcos"
             answer_sheet_data = answer_sheet.set_attributes(answer_sheet_details)
             res = {
                 'result': 'Ok',

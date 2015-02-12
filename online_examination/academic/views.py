@@ -47,6 +47,7 @@ class AddStudent(View):
                         student.course = course
                         student.semester = semester
                         student.age = request.POST['age']
+                        student.source = request.POST['source_of_information']
                         student.hall_ticket_no = request.POST['hall_ticket_no']
                         student.dob = datetime.strptime(request.POST['dob'], '%d/%m/%Y')
                         student.address = request.POST['address']
@@ -194,6 +195,7 @@ class EditStudentDetails(View):
                 ctx_student_data.append({
                     'student_name': student.student_name if student.student_name else '',
                     'age': student.age if student.age else '',
+                    'source_of_information':student.source if student.source else '',
                     'registration_no': student.registration_no if student.registration_no else '',
                     'hall_ticket_no': student.hall_ticket_no if student.hall_ticket_no else '',
                     'dob': student.dob.strftime('%d/%m/%Y') if student.dob else '',
@@ -231,11 +233,12 @@ class EditStudentDetails(View):
         student_data = ast.literal_eval(request.POST['student'])
         print student_data
         # try:
-        course = Course.objects.get(id = student_data['course'])
+        course = Course.objects.get(id = student_data['course_id'])
         student.course=course
         semester = Semester.objects.get(id = student_data['semester'])
         student.semester=semester
         student.student_name = student_data['student_name']
+        student.source = student_data['source_of_information']
         student.registration_no = student_data['registration_no']
         student.address = student_data['address']
         student.age = student_data['age']

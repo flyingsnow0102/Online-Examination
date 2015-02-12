@@ -22,8 +22,7 @@
 								<tr>
 									<th> Exam Name </th>
 									<th> Course </th>
-									<th> Batch </th>
-									<th> Branch </th>
+									<th> Semester </th>
 									<th> Start Date </th>
 									<th> End Date </th>
 									<th> Exam Total </th>
@@ -32,9 +31,8 @@
 								<tr>
 								<tr> 
 									<td> <input type="text" ng-model="exam_schedule.exam_name" /> </td>
-									<td> [[exam_schedule.course]] </td>
-									<td> [[exam_schedule.batch]] </td>
-									<td> [[exam_schedule.branch]] </td>
+									<td> [[exam_schedule.course_name]] </td>
+									<td> [[exam_schedule.semester_name]] </td>
 									<td> <input type="text" ng-model="exam_schedule.start_date" id="start_date"/> </td>
 									<td> <input type="text" ng-model="exam_schedule.end_date" id="end_date"/> </td>
 									<td> <input type="text" ng-model="exam_schedule.exam_total" /> </td>
@@ -47,18 +45,22 @@
 							<table class="table stripped">
 								<tr>
 									<th>Subject</th>
-									<th>Date</th>
-									<th>Start time</th>
-									<th>End Time</th>
+									<th>Duration</th>
+									<th></th>
 									<th>Total Mark</th>
 									<th>Pass Mark</th>
 									<th> <input type="button" value="Add Subject" ng-click="add_subject()" /> </th>								
 								</tr>
-								<tr ng-repeat="subject in exam_schedule.subjects">
+								<tr ng-repeat="subject in exam_schedule.subjects_data">
 									<td> <input type="text" ng-model="subject.subject_name" /> </td>
-									<td> <input type="text" ng-model="subject.date" id="subject_date_[[$index]]" ng-click="attach_date_picker()" /> </td>
-									<td> <input type="text" ng-model="subject.start_time" /> </td>
-									<td> <input type="text" ng-model="subject.end_time" /> </td>
+									<td> <input type="text" ng-model="subject.duration" /> </td>
+									<td> 
+										<select ng-model="subject.duration_parameter">
+											<option value="">Select</option>
+											<option value="Hours">Hours</option>
+											<option value="Minutes">Minutes</option>
+										</select>
+									 </td>
 									<td> <input type="text" ng-model="subject.total_mark" ng-change="calculate_total_marks()" /> </td>
 									<td> <input type="text" ng-model="subject.pass_mark" /> </td>
 									<td> <input type="button" value="Remove Subject" ng-click="remove_subject(subject)" /> </td>			
