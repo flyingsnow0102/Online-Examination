@@ -232,6 +232,7 @@ class EditStudentDetails(View):
         print student,"jsjs"
         student_data = ast.literal_eval(request.POST['student'])
         print student_data
+        print request.FILES
         # try:
         course = Course.objects.get(id = student_data['course_id'])
         student.course=course
@@ -247,7 +248,7 @@ class EditStudentDetails(View):
         student.address = student_data['address']
         student.mobile_number = student_data['mobile_number']
         student.email = student_data['email']
-        student.photo = request.FILES.get('photo_img', '')  
+        student.photo = request.FILES.get('photo', '')  
         student.permanent_address = student_data['permanent_address']
         student.guardian_mobile_number = student_data['guardian_mobile_number'] 
 

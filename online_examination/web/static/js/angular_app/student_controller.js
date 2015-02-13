@@ -245,12 +245,16 @@ function EditStudentController($scope, $http, $element, $location, $timeout) {
                 'student': angular.toJson($scope.student),
                 "csrfmiddlewaretoken" : $scope.csrf_token
             }
-            $http({
-                method : 'post',
-                url : $scope.url,
-                data : $.param(params),
-                headers : {
-                    'Content-Type' : 'application/x-www-form-urlencoded'
+            var fd = new FormData();
+            console.log($scope.student.photo.src)
+            fd.append('photo', $scope.student.photo.src)
+            console.log($scope.student.photo.src)
+            for(var key in params){
+                fd.append(key, params[key]);          
+            }
+            $http.post($scope.url, fd, {
+                transformRequest: angular.identity,
+                headers: {'Content-Type': undefined
                 }
             }).success(function(data, status) {
                 

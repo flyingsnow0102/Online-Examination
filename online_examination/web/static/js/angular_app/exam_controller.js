@@ -797,7 +797,7 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
             var counter = setInterval(timer, 1000);
 
             
-            paginate($scope.questions, $scope);
+            // paginate($scope.questions, $scope,3);
         }
     }
     $scope.close_popup = function(){
@@ -815,6 +815,7 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
                 $scope.duration = subject.duration_no;
                 $scope.duration_parameter = subject.duration_parameter;
                 $scope.questions = data.questions;
+                paginate(data.questions, $scope, 3);
             } else {
                 $scope.validation_error = data.message;
             }
@@ -825,7 +826,7 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
         });
     }
     $scope.select_page = function(page){
-        select_page(page, $scope.questions, $scope, 1);
+        select_page(page, $scope.questions, $scope, 3);
     }
     $scope.range = function(n) {
         return new Array(n);
