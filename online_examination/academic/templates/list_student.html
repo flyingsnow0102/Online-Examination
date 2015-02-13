@@ -29,7 +29,8 @@
 	</div>
 	<div class="list_student">
 		<table id="list" class="table table-hover" >
-			<tr class="success" style="font-size: 12px" style="width:auto">			
+			<tr class="success" style="font-size: 12px" style="width:auto">	
+				<th></th>		
 			  	<th>Student Name</th>
 			  	<th>Registration No</th>			  
 			  	<th>View</th>
@@ -37,6 +38,7 @@
 			  	<th>Delete</th>			  
 			</tr>			
 			<tr ng-repeat="student in visible_list">
+				<td>[[($index)+((current_page-1)*page_interval)+1]]</td>
 				<td>[[student.name]]</td>
 				<td>[[student.roll_number]]</td>
 				<td><a href="" ng-click="display_student_details(student)" >View</td>

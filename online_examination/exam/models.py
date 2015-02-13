@@ -241,6 +241,7 @@ class AnswerSheet(models.Model):
             'student_name': self.student.student_name,
             'exam': self.exam.id,
             'exam_name':self.exam.exam_name,
+            'subject_name': self.subject.subject_name,
             'status':self.status if self.status else 'Fail',
             'total_mark': self.total_mark if self.total_mark else 0,
             'subject' : self.subject.id,

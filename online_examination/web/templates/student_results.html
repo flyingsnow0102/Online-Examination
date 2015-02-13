@@ -24,13 +24,15 @@
 		<th>#</th>
 		<th>Name</th>
 		<th>Exam</th>
+		<th>Subject</th>
 		<th>Result</th>
 		<th>Total Mark</th>
 	</tr>
 	<tr ng-repeat="result in exam_results">
-		<td> [[($index)]] </td>
+		<td> [[($index+1)]] </td>
 		<td>[[result.student_name]]</td>
 		<td>[[result.exam_name]]</td>
+		<td>[[result.subject_name]]</td>
 		<td>[[result.status]]</td>
 		<td>[[result.total_mark]]</td>
 	</tr>

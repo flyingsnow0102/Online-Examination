@@ -262,7 +262,7 @@ a {
 	height: 20px;
 }
 .div_header {
-	background-color: #ADD8E6;
+	background-color: #769ace;
     color: #FFFFFF;
     font-size: 16px;
     font-weight: bold;
@@ -763,6 +763,7 @@ label.block{
 .new_button input[type="button"] {
 	margin: auto;
 	display: block;
+	background-color: #769ace;
 }
 
 .new_button {

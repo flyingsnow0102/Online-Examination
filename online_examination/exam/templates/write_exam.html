@@ -86,7 +86,7 @@
 				            <div class="row" ng-show ="allow_exam">
 				            	<div ng-repeat="question in visible_list">
 									<div class="col-xs-12 col-lg-6 textlt">
-										<label> [[$index+1]].[[question.question]]</label>  
+										<label> [[($index)+((current_page-1)*page_interval)+1]].[[question.question]]</label>  
 									</div>
 									<ol class="answer" type="A">
 										<li ng-repeat="choice in question.choices"> 

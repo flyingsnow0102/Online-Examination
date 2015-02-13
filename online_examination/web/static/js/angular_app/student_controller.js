@@ -311,7 +311,7 @@ function StudentListController($scope, $http, $element, $location, $timeout) {
         $http.get(url).success(function(data)
         {
             $scope.students = data.students;
-            paginate(data.students, $scope);
+            paginate(data.students, $scope,2);
         }).error(function(data, status)
         {
             console.log(data || "Request failed");
@@ -353,7 +353,7 @@ function StudentListController($scope, $http, $element, $location, $timeout) {
         document.location.href = '/academic/add_student/';
     }
     $scope.select_page = function(page){
-        select_page(page, $scope.students, $scope);
+        select_page(page, $scope.students, $scope,2);
     }
     $scope.range = function(n) {
         return new Array(n);

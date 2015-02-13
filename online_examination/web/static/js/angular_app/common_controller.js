@@ -3,9 +3,11 @@
 
 function paginate(list, $scope, page_interval) {
     if(!page_interval)
-        var page_interval = 20;
+        $scope.page_interval = 20;
+    else 
+        $scope.page_interval = page_interval;
     $scope.current_page = 1;
-    $scope.pages = list.length / page_interval;
+    $scope.pages = list.length / $scope.page_interval;
     if($scope.pages > parseInt($scope.pages))
         $scope.pages = parseInt($scope.pages) + 1;
     $scope.visible_list = list.slice(0, page_interval);
