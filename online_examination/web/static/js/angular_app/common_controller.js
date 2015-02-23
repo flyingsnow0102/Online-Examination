@@ -83,24 +83,8 @@ function validateEmail(email) {
     var re = /\S+@\S+\.\S+/;
     return re.test(email);
 }
-function get_designation($scope, $http) {
-    $http.get($scope.url).success(function(data)
-    {
-        $scope.designations = data.designations;
-    }).error(function(data, status){
-        console.log(data || "Request failed");
-    });
-}
-function get_fee_structure_details($scope, $http, fees_structure_id) {
-    var url = '/fees/edit_fees_structure_details/'+fees_structure_id+'/';
-    $http.get(url).success(function(data){
-        $scope.fees_structure = data.fees_structure[0];
-        $scope.no_installments = data.fees_structure[0].no_installments;
-        $scope.fees_structure.removed_heads = [];
-    }).error(function(data, status){
-       console.log(data || "Request failed");
-    })
-}
+
+
 function get_course_list($scope, $http) {
     $http.get('/college/list_course/').success(function(data)
     {   
@@ -171,13 +155,6 @@ function calculate_total_fee_amount() {
     console.log($('#balance').val());
 }
 
-function get_fees_head_details($scope, $http, fees_head_id) {
-    $http.get('/fees/edit_fees_head/'+fees_head_id+'/').success(function(data){
-        $scope.fee_head = data.fees_head[0];
-    }).error(function(data, status){
-        console.log(data || 'Request failed');
-    });
-}
 
 
 /************************** End Common JS Functions *****************************/
