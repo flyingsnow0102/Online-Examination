@@ -21,6 +21,7 @@ class Subject(models.Model):
 
 class Exam(models.Model):
     
+    student = models.ForeignKey(Student, null=True, blank=True)
     exam_name = models.CharField('Exam Name', null=True, blank=True, max_length=200)
     course = models.ForeignKey(Course, null=True, blank=True)
     semester = models.ForeignKey(Semester, null=True, blank=True)
@@ -74,35 +75,7 @@ class Exam(models.Model):
         }
         return exam_data
 
-class SubjectMark(models.Model):
 
-    subject_name = models.ForeignKey(Subject, null=True, blank=True)
-    mark = models.CharField('Mark ', null=True, blank=True, max_length=200)
-    status = models.CharField('Status ', null=True, blank=True, max_length=200)
-
-    def __unicode__(self):
-        return str(self.subject_name)
-
-    class Meta:
-        verbose_name = 'SubjectMark'
-        verbose_name_plural = 'SubjectMark'
-
-
-class StudentMark(models.Model):
-    student = models.ForeignKey(Student, null=True, blank=True)
-    course = models.ForeignKey(Course, null=True, blank=True)
-    semester = models.ForeignKey(Semester, null=True, blank=True)
-    exam = models.ForeignKey(Exam, null=True, blank=True)
-    total_mark = models.DecimalField('Total Mark Obtained',max_digits=14, decimal_places=2, default=0)
-    subject_mark = models.ManyToManyField(SubjectMark, null=True, blank=True)
-    status = models.CharField('Status ', null=True, blank=True, max_length=200)
-
-    def __unicode__(self):
-        return str(self.student.student_name) if self.student else 'Student'
-
-    class Meta:
-        verbose_name = 'StudentMark'
-        verbose_name_plural = 'StudentMark'
 
 class Choice(models.Model):
 
