@@ -56,6 +56,7 @@ class Student(models.Model):
 			'email':self.email,
 			'father_name':self.father_name,
 			'guardian_mobile_number':self.guardian_mobile_number,
+			'pass_out_year':self.pass_out_year,
 		}	
 		return student_data
 
