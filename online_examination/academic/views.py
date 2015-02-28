@@ -26,8 +26,8 @@ class AddStudent(View):
                 password = ''.join(choice(chars) for _ in xrange(length))
                 print password
                 course = Course.objects.get(id = request.POST['course'])
-                semester = Semester.objects.get(id=request.POST['semester'])
-                student, created = Student.objects.get_or_create(semester=semester, course=course, student_name=request.POST['student_name'])
+                # semester = Semester.objects.get(id=request.POST['semester'])
+                student, created = Student.objects.get_or_create(course=course, student_name=request.POST['student_name'])
                 if not created:
                     res = {
                         'result': 'error',
@@ -45,7 +45,9 @@ class AddStudent(View):
                         student.registration_no = request.POST['registration_no']
                         student.address = request.POST['address']
                         student.course = course
-                        student.semester = semester
+                        # student.semester = semester
+                        student.father_name = request.POST['father_name']
+                        student.specialization = request.POST['specialization']
                         student.age = request.POST['age']
                         student.source = request.POST['source_of_information']
                         student.hall_ticket_no = request.POST['hall_ticket_no']
@@ -79,7 +81,7 @@ class AddStudent(View):
 class ListStudent(View):
     def get(self, request, *args, **kwargs):
         if request.GET.get('course_id', ''):
-            students = Student.objects.filter(course__id=request.GET.get('course_id', ''),semester__id=request.GET.get('semester_id', '')).order_by('registration_no')
+            students = Student.objects.filter(course__id=request.GET.get('course_id', '')).order_by('registration_no')
         else:
             students = Student.objects.all().order_by('registration_no')   
         if request.is_ajax():
@@ -149,8 +151,10 @@ class ViewStudentDetails(View):
                     'permanent_address': student.permanent_address if student.permanent_address else '',
                     'course': student.course.course if student.course.course else '',
                     'course_id': student.course.id if student.course.course else '',
-                    'semester': student.semester.semester if student.semester.semester else '',
-                    'course_id': student.semester.id if student.semester.semester else '',
+                    # 'semester': student.semester.semester if student.semester.semester else '',
+                    'specialization': student.specialization if student.specialization else '',
+                    'father_name': student.father_name if student.father_name else '',
+                    # 'course_id': student.semester.id if student.semester.semester else '',
                     'mobile_number': student.mobile_number if student.mobile_number else '',
                     'email': student.email if student.email else '',
                     'photo': student.photo.name if student.photo.name else '',
@@ -181,13 +185,13 @@ class EditStudentDetails(View):
         if request.is_ajax():
             try:
                 course =  request.GET.get('course', '')
-                semester =  request.GET.get('semester', '')              
+                # semester =  request.GET.get('semester', '')              
 
                 if course:
                     course = Course.objects.get(id=course)
                
-                if semester:
-                    semester = Semester.objects.get(id=semester)
+                # if semester:
+                #     semester = Semester.objects.get(id=semester)
                 student = Student.objects.get(id = student_id)
 
                 
@@ -204,8 +208,10 @@ class EditStudentDetails(View):
                     'permanent_address': student.permanent_address if student.permanent_address else '',
                     'course': student.course.course if student.course.course else '',
                     'course_id': student.course.id if student.course.course else '',
-                    'semester': student.semester.semester if student.semester.semester else '',
-                    'course_id': student.semester.id if student.semester.semester else '',
+                    # 'semester': student.semester.semester if student.semester.semester else '',
+                    'specialization': student.specialization if student.specialization else '',
+                    'father_name': student.father_name if student.father_name else '',
+                    # 'course_id': student.semester.id if student.semester.semester else '',
                     'mobile_number': student.mobile_number if student.mobile_number else '',
                     'email': student.email if student.email else '',
                     'photo': student.photo.name if student.photo.name else '',
@@ -236,11 +242,13 @@ class EditStudentDetails(View):
         # try:
         course = Course.objects.get(id = student_data['course_id'])
         student.course=course
-        semester = Semester.objects.get(id = student_data['semester'])
-        student.semester=semester
+        # semester = Semester.objects.get(id = student_data['semester'])
+        # student.semester=semester
         student.student_name = student_data['student_name']
         student.source = student_data['source_of_information']
         student.registration_no = student_data['registration_no']
+        student.specialization = student_data['specialization']
+        student.father_name = student_data['father_name']
         student.address = student_data['address']
         student.age = student_data['age']
         student.hall_ticket_no = student_data['hall_ticket_no']

@@ -16,15 +16,13 @@
 		<div class="alert alert-info" align="Center"> Students </div>
 		<div class="search_students">
 			<label> Course</label> 
-			<select name="course" ng-model="course" ng-change="get_semester()">
+			<select name="course" ng-model="course" ng-options="course.id as course.course for course in courses" ng-change="get_students()">
 				<option value="">Select</option>
-				<option ng-repeat="course in courses" value="[[course.id]]">[[course.course]]
-				</option>
 			</select>
-				<label> Semester</label> 
+				<!-- <label> Semester</label> 
 				<select name="semester" ng-model="semester" ng-options="semester.id as semester.semester for semester in semesters" ng-change="get_students()">
 					<option value="">Select</option>
-				</select>
+				</select> -->
 		</div>
 	</div>
 	<div class="list_student">

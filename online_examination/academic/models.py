@@ -19,6 +19,7 @@ class Student(models.Model):
 	hall_ticket_no = models.CharField('Roll Number', null=True, blank=True, max_length=200 )
 	address = models.CharField('Student Address', null=True, blank=True, max_length=200 )
 	course = models.ForeignKey(Course, null=True, blank=True)
+	specialization = models.CharField('Specialization', null=True, blank=True, max_length=200)
 	semester = models.ForeignKey(Semester, null=True, blank=True)
 	dob = models.DateField('Date of Birth',null=True, blank=True)
 	age = models.CharField('Age',null=True, blank=True, max_length=200 )
@@ -26,6 +27,7 @@ class Student(models.Model):
 	mobile_number= models.CharField('Mobile Number',null=True, blank=True, max_length=200)
 	email = models.CharField('Email',null=True, blank=True, max_length=200)
 	photo = models.ImageField(upload_to = "uploads/photos/", null=True, blank=True)
+	father_name = models.CharField('Father', null=True, blank=True, max_length=200)
 	guardian_mobile_number= models.CharField('Guardian Mobile Number',null=True, blank=True, max_length=200)
 	
 

@@ -107,7 +107,7 @@
               </select>
             </div>
           </div>
-          <div class="form-group">
+         <!--  <div class="form-group">
             <label for="inputPassword3" class="col-sm-4 control-label">Semester </label>
             <div class="col-sm-6">
               <select name="semester" ng-model="student.semester">
@@ -115,6 +115,18 @@
                   <option ng-repeat="semester in semesters" ng-selected="semester.id==student.semester"value="[[semester.id]]" >[[semester.semester]]
                   </option>
                 </select>
+            </div>
+          </div> -->
+          <div class="form-group">
+            <label for="inputPassword3" class="col-sm-4 control-label"> Specialization</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" id="inputPassword3"ng-model="student.specialization" placeholder=" Specialization ">
+            </div>
+          </div>
+           <div class="form-group">
+            <label for="inputPassword3" class="col-sm-4 control-label"> Father's Name</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" id="inputPassword3"ng-model="student.father_name" placeholder=" Father's Name ">
             </div>
           </div>
           <div class="form-group">
