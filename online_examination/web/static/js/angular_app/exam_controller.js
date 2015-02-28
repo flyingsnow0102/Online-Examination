@@ -45,6 +45,18 @@ function ExamController($scope, $element, $http, $timeout, share, $location)
             });
         }
     }
+    $scope.get_students = function(){
+        console.log("sjsj")
+        var url = '/academic/list_student/?course_id='+ $scope.course;
+        $http.get(url).success(function(data)
+        {
+            $scope.students = data.students;
+            paginate(data.students, $scope);
+        }).error(function(data, status)
+        {
+            console.log(data || "Request failed");
+        });
+    }
     $scope.calculate_total_marks = function(){
         var total = 0;
         for(var i=0; i<$scope.subjects.length; i++) {
@@ -135,6 +147,7 @@ function ExamController($scope, $element, $http, $timeout, share, $location)
             params = {
                 'course': $scope.course,
                 'semester': $scope.semester,
+                'student': $scope.student,
                 'start_date': $scope.start_date,
                 'end_date': $scope.end_date,
                 'exam_total': $scope.exam_total,

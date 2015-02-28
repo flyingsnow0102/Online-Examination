@@ -29,7 +29,7 @@ class Student(models.Model):
 	photo = models.ImageField(upload_to = "uploads/photos/", null=True, blank=True)
 	father_name = models.CharField('Father', null=True, blank=True, max_length=200)
 	guardian_mobile_number= models.CharField('Guardian Mobile Number',null=True, blank=True, max_length=200)
-	
+	pass_out_year = models.CharField('Pass Out Year',null=True, blank=True, max_length=200)
 
 	def __unicode__(self):
 		return str(self.student_name)

@@ -34,7 +34,7 @@
 							<div class="form-group">
 								<label class="col-xs-12 control-label"> Semester</label>  
 								<div class="col-xs-12">
-									<select name="semester"  class="form-control"ng-model="semester">
+									<select name="semester"  class="form-control"ng-model="semester" ng-change="get_students()">
 										<option value="">Select</option>
 										<option ng-repeat="semester in semesters" value="[[semester.id]]"  >[[semester.semester]]
 										</option>
@@ -42,7 +42,20 @@
 								</div>
 							</div>
 						</div>
+						<div class="col-xs-12 col-lg-6">
+							<div class="form-group">
+								<label class="col-xs-12 control-label"> Student</label>  
+								<div class="col-xs-12">
+									<select name="student"  class="form-control"ng-model="student">
+										<option value="">Select</option>
+										<option ng-repeat="student in students" value="[[student.id]]"  >[[student.name]]
+										</option>
+									</select>
+								</div>
+							</div>
+						</div>
 					</div>
+
 					<div class="row" >
 						<div class=" col-xs-12 col-lg-6">
 							<div class="form-group">
