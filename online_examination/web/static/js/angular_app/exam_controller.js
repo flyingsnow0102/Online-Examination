@@ -91,6 +91,9 @@ function ExamController($scope, $element, $http, $timeout, share, $location)
         if($scope.course == '' || $scope.course == undefined) {
             $scope.validation_error = "Please Select a course " ;
             return false;
+        }else if($scope.semester == '' || $scope.semester == undefined) {
+            $scope.validation_error = "Please Select a semester" ;
+            return false;
         }else if($scope.start_date == '' || $scope.start_date == undefined) {
             $scope.validation_error = "Please Select a start date" ;
             return false;
@@ -279,9 +282,13 @@ function EditExamController($scope, $element, $http, $timeout, share, $location)
         }        
     }
     $scope.validate_exam_schedule = function() {
+
         $scope.validation_error = '';
         if($scope.exam_schedule.exam_name == '' || $scope.exam_schedule.exam_name == undefined) {
             $scope.validation_error = "Please Enter a exam name ";
+            return false;
+        }else if($scope.exam_schedule.semester == '' || $scope.exam_schedule.semester == undefined) {
+            $scope.validation_error = "Please Select the semester";
             return false;
         }else if($scope.exam_schedule.start_date == '' || $scope.exam_schedule.start_date == undefined) {
             $scope.validation_error = "Please Select a start date";
@@ -316,9 +323,9 @@ function EditExamController($scope, $element, $http, $timeout, share, $location)
         return true;   
     }
     $scope.save_exam_schedule = function() {
-        
         $scope.exam_schedule.start_date = $$('#start_date')[0].get('value');
         $scope.exam_schedule.end_date = $$('#end_date')[0].get('value');
+        console.log($scope.exam_schedule)
         if($scope.validate_exam_schedule()) {            
             params = { 
                 'exam_name':$scope.exam_schedule.exam_name,
@@ -343,6 +350,7 @@ function EditExamController($scope, $element, $http, $timeout, share, $location)
                 if (data.result == 'error'){
                     $scope.error_flag=true;
                     $scope.message = data.message;
+                    console.log($scope.message);
                 } else {
                     document.location.href ='/exam/schedule_exam/';
                 }
@@ -455,8 +463,12 @@ function QuestionController($scope, $element, $http, $timeout, share, $location)
                 total = parseFloat(total) + parseFloat($scope.question_details.questions[i].mark);
             }
             console.log(total,$scope.subject_total_mark,$scope.question_details.questions)
-            if (total != $scope.subject_total_mark){
+            if (total > $scope.subject_total_mark){
                 $scope.validation_error = "Please Check the mark for your questions as it exceeds the total mark of the exam " ;
+                return false;
+            }
+            if (total < $scope.subject_total_mark){
+                $scope.validation_error = "Please Check the mark for your questions as it is less than the total mark of the exam " ;
                 return false;
             }
         } return true;

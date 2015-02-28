@@ -211,12 +211,14 @@ class EditExamSchedule(View):
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
             current_date = datetime.now().date()
-            if exam.start_date < current_date:
-                exam_schedule_id = kwargs['exam_schedule_id']
-                exam = Exam.objects.get(id=exam_schedule_id)
-                exam.subjects = []
-                exam.save()
-            
+            # exam =  ast.literal_eval(request.POST['exam_schedule'])
+            # print("qeqwe")
+            exam_schedule_id = kwargs['exam_schedule_id']
+            exam = Exam.objects.get(id=exam_schedule_id)
+            exam.subjects = []
+            # exam.save()
+            print(exam)
+            if exam.start_date < current_date:    
                 save_exam_schedule_details(exam, request)
                 res = {
                     'result': 'Ok',
