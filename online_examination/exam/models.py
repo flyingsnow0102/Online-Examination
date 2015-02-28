@@ -212,6 +212,8 @@ class AnswerSheet(models.Model):
         answer_sheet_data = {
             'student': self.student.id,
             'student_name': self.student.student_name,
+            'fathers_name': self.student.father_name if self.student.father_name else '',
+            'specialization': self.student.specialization if self.student.specialization else '',
             'exam': self.exam.id,
             'exam_name':self.exam.exam_name,
             'subject_name': self.subject.subject_name,

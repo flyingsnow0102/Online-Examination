@@ -84,6 +84,8 @@ def save_exam_schedule_details(exam, request):
     exam.end_date = datetime.strptime(request.POST['end_date'], '%d/%m/%Y')
     course = Course.objects.get(id = request.POST['course'])
     semester = Semester.objects.get(id = request.POST['semester'])
+    student = Student.objects.get(id=request.POST['student'])
+    exam.student = student
     exam.exam_name = course.course + '-' +semester.semester
     exam.no_subjects = request.POST['no_subjects']
     exam.exam_total = request.POST['exam_total']
@@ -103,11 +105,20 @@ class SaveExamSchedule(View):
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
             try:
+                student = Student.objects.get(id=request.POST['student'])
+            except:
+                student = ''
+            print student,"student"
+            try:
                 course = Course.objects.get(id = request.POST['course'])
                 semester = Semester.objects.get(id = request.POST['semester'])
                 exam_name = ''
                 exam_name = course.course + '-' +semester.semester
-                exam = Exam.objects.get(course=course,semester=semester,exam_name=exam_name)
+                if student:
+                    exam = Exam.objects.get(course=course,semester=semester,exam_name=exam_name,student=student)
+                else:
+                    exam = Exam.objects.get(course=course,semester=semester,exam_name=exam_name)
+                print exam,"exam"
                 res = {
                     'result': 'error',
                     'message': 'Exams Scheduled Already'
@@ -117,7 +128,10 @@ class SaveExamSchedule(View):
                 print str(ex), "Exception ===="
                 exam_name = ''
                 exam_name = course.course + '-' +semester.semester
-                exam = Exam.objects.create(course=course,semester=semester,exam_name=exam_name)
+                if student:
+                    exam = Exam.objects.create(course=course,semester=semester,exam_name=exam_name)
+                else:
+                    exam = Exam.objects.create(course=course,semester=semester,exam_name=exam_name)
                 print exam
                 save_exam_schedule_details(exam, request)                     
                 res = {
@@ -158,8 +172,10 @@ class GetExams(View):
         semester_id = kwargs['semester_id']
         exams = {}
         if request.is_ajax():
-            # try:
-            exams = Exam.objects.filter(course=course_id, semester=semester_id)
+            try:
+                exams = Exam.objects.get(course=course_id, semester=semester_id,student__user=request.user)
+            except:
+                exams = Exam.objects.filter(course=course_id, semester=semester_id)
             for exam in exams:
                 if request.GET.get('from', '') == 'write_exam':
                     exams = exam.get_json_data('x')
