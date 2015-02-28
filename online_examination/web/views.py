@@ -100,15 +100,24 @@ class StudentResults(View):
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
             exam_results = []
+            student_details = []
             exam_resgistration_no = request.GET.get('exam_resgistration_no')
+            print(exam_resgistration_no)
             answer_sheets = AnswerSheet.objects.filter(student__registration_no=exam_resgistration_no)
             print answer_sheets
+            student_data = Student.objects.get(registration_no=exam_resgistration_no)
+            print(student_data)
+            student_details.append(student_data.get_json_data())
+            print(student_details)
+            
             for answer_sheet in answer_sheets:
                 exam_results.append(answer_sheet.get_json_data()) 
+
             print exam_results
             res = {
                     'result': 'Ok',
                     'exam_results': exam_results,
+                    'student_details':student_details,
                 }
             response = simplejson.dumps(res)
             return HttpResponse(response, mimetype='application/json')

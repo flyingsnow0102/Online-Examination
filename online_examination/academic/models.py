@@ -16,7 +16,7 @@ class Student(models.Model):
 	is_curently_logged_in = models.BooleanField('Currently Logged In',default=False)
 	student_password = models.CharField('Student Password', null=True, blank=True, max_length=200)
 	registration_no = models.CharField('Roll Number', null=True, blank=True, max_length=200 )
-	hall_ticket_no = models.CharField('Roll Number', null=True, blank=True, max_length=200 )
+	hall_ticket_no = models.CharField('Hall Ticket Number', null=True, blank=True, max_length=200 )
 	address = models.CharField('Student Address', null=True, blank=True, max_length=200 )
 	course = models.ForeignKey(Course, null=True, blank=True)
 	specialization = models.CharField('Specialization', null=True, blank=True, max_length=200)
@@ -37,4 +37,25 @@ class Student(models.Model):
 	class Meta:
 		verbose_name = 'Student'
 		verbose_name_plural = 'Student'
+	def get_json_data(self):
+		student_data={
+			'id':self.id,
+			'student_name':self.student_name,
+			'source':self.source,
+			'registration_no':self.registration_no,
+			'hall_ticket_no':self.hall_ticket_no,
+			'address':self.address,
+			'course':self.course.course,
+			'specialization':self.specialization,
+			'photo':self.photo.name,
+			'semester':self.semester,
+			'dob':str(self.dob),
+			'age':self.age,
+			'permanent_address':self.permanent_address,
+			'mobile_number':self.mobile_number,
+			'email':self.email,
+			'father_name':self.father_name,
+			'guardian_mobile_number':self.guardian_mobile_number,
+		}	
+		return student_data
 

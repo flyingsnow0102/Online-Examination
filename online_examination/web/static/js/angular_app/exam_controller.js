@@ -855,6 +855,9 @@ function ResultController($scope, $element, $http, $timeout, share, $location){
         var url = '/student_result/?exam_resgistration_no='+$scope.exam_resgistration_no;
         $http.get(url).success(function(data) {
             $scope.exam_results = data.exam_results;
+            $scope.student_details = data.student_details[0];
+            console.log($scope.student_details);
+            console.log($scope.exam_results);
         }).error(function(data, status)
         {
             console.log(data || "Request failed");

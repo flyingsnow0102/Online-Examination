@@ -19,6 +19,61 @@
 		<input name="" class="btn btn-primary"ng-click="get_results()" type="button" value="Submit" />
 	</div>
 </form>
+
+<div ng-show="exam_results.length > 0">   
+    <div id='student_details_view' style='padding:10px; background:#fff;'>
+        <div class="sign_box">
+            <div class="row-fluid">
+                <div class="span12 sign_mid">
+	               <div id="main-title">
+						<div class="alert alert-info" align="Center"><h4>Student Exam Results</h4></div>
+					</div>
+	               
+					<div class="section_1">
+						<div class="formrow student_detail_section">
+							<img src="/site_media/[[student_details.photo]]" ng-show="student_details.photo != ''"  class="staff_pic"/> 
+							<img src="/static/images/profile_pic.jpeg" ng-hide="student_details.photo != ''"  class="staff_pic"/>
+							<div class="control">
+								<label >Student Name:</label> 
+								<!-- <label name="student_name" value="" ng-model="student_name"> --><span>[[student_details.student_name]]</span>
+								<label class="bold"> Registration No</label>
+								<label name="registration_no" value="" > &nbsp;[[student_details.registration_no]]</label>
+								<label class="bold"> Hallticket No</label>
+								<label name="hall_ticket_no" value="" > &nbsp;[[student_details.hall_ticket_no]]</label>
+
+								<label class="bold">Course</label>
+								<label name="course" value="" > &nbsp;[[student_details.course]]</label>
+								<label class="bold">Specialization</label>
+								<label name="specialization" value="" > &nbsp;[[ student_details.specialization ]]</label>
+								
+							</div>
+						</div>
+						<div class="formrow student_detail_section">
+							<h3> Personal Details </h3>
+							<label class="bold"> DOB</label>
+							<label name="dob" value="" > &nbsp;[[student_details.dob]]</label>
+							<label class="bold"> Age</label>
+							<label name="age" value="" > &nbsp;[[student_details.age]]</label>
+							<label class="bold">Address</label>
+							<label name="address" value="" > &nbsp;[[student_details.address]]</label>
+							<label class="bold"> Permanent Address</label>
+							<label name="permanent_address" value="" > &nbsp;[[student_details.permanent_address]]</label>
+							<label class="bold"> Mobile </label> 
+							<label name="mobile_number" value="" > &nbsp;[[student_details.mobile_number]]</label> 
+							<label class="bold"> Email</label>
+							<label name="email" value="" > &nbsp;[[student_details.email]]</label>
+							<label class="bold"> Guardian Name </label>
+							<label name="guardian_name" value="" > &nbsp;[[student_details.father_name]]</label> 
+							<label class="bold"> Guardian Mobile </label>
+							<label name="guardian_mobile_number" value="" > &nbsp;[[student_details.guardian_mobile_number]]</label> 
+						</div>
+					</div>				
+					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 <table ng-show="exam_results.length > 0" class="table table-striped">
 	<tr>
 		<th>#</th>
