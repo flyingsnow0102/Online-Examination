@@ -34,7 +34,9 @@ function save_new_student($http, $scope) {
             'age': $scope.age,
             'hall_ticket_no': $scope.hall_ticket_no,
             'course': $scope.course,
-            'semester': $scope.semester,
+            // 'semester': $scope.semester,
+            'specialization': $scope.specialization,
+            'father_name': $scope.father_name,
             'source_of_information':$scope.source_of_information,
             'dob': $scope.dob,
             'address': $scope.address,
@@ -119,9 +121,6 @@ validate_new_student = function($scope) {
     else if($scope.course == '' || $scope.course == undefined) {
         $scope.validation_error = "Please Enter Course";
         return false;
-    }else if($scope.semester == '' || $scope.semester == undefined) {
-        $scope.validation_error = "Please Enter Semester";
-        return false;
     }else if($scope.dob == '' || $scope.dob == undefined) {
         $scope.validation_error = "Please Enter DOB";
         return false;
@@ -204,9 +203,6 @@ function EditStudentController($scope, $http, $element, $location, $timeout) {
         }   
         else if($scope.student.course == '' || $scope.student.course == undefined) {
             $scope.validation_error = "Please Enter Course";
-            return false;
-        }else if($scope.student.semester == '' || $scope.student.semester == undefined) {
-            $scope.validation_error = "Please Enter Semester";
             return false;
         }else if($scope.student.dob == '' || $scope.student.dob == undefined) {
             $scope.validation_error = "Please Enter DOB";
@@ -307,7 +303,8 @@ function StudentListController($scope, $http, $element, $location, $timeout) {
         });
     }
     $scope.get_students = function(){
-        var url = '/academic/list_student/?course_id='+ $scope.course+'&semester_id='+$scope.semester;
+        console.log("sjsj")
+        var url = '/academic/list_student/?course_id='+ $scope.course;
         $http.get(url).success(function(data)
         {
             $scope.students = data.students;

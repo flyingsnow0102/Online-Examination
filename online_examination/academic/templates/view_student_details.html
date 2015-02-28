@@ -20,8 +20,8 @@
 
 								<label class="bold">Course</label>
 								<label name="course" value="" > &nbsp;[[student.course]]</label>
-								<label class="bold">Semester</label>
-								<label name="semester" value="" > &nbsp;[[ student.semester ]]</label>
+								<label class="bold">Specialization</label>
+								<label name="specialization" value="" > &nbsp;[[ student.specialization ]]</label>
 								<input type="radio"ng-model="show_password" value="Yes" ><label>Show Password</label>
 								<label  ng-show="show_password == 'Yes'" class="bold"> Password</label>
 								<label ng-show="show_password == 'Yes'" name="password" value="" > &nbsp;[[student.student_password]]</label>
@@ -41,6 +41,8 @@
 							<label name="mobile_number" value="" > &nbsp;[[student.mobile_number]]</label> 
 							<label class="bold"> Email</label>
 							<label name="email" value="" > &nbsp;[[student.email]]</label>
+							<label class="bold"> Guardian Name </label>
+							<label name="guardian_name" value="" > &nbsp;[[student.father_name]]</label> 
 							<label class="bold"> Guardian Mobile </label>
 							<label name="guardian_mobile_number" value="" > &nbsp;[[student.guardian_mobile_number]]</label> 
 						</div>
