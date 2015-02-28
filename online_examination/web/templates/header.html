@@ -47,8 +47,10 @@
 							<li> <a href="{% url 'schedule_exam' %}"> Exam</a> </li>
 							<li> <a href="{% url 'create_exam' %}"> Create Exam</a> </li>
 							<li> <a href="{% url 'marks' %}"> Create Questions</a> </li>
+						{% else %}
+							<li> <a href="{% url 'write_exam' %}"> Write Exam</a> </li>
 						{% endif %}
-						<li> <a href="{% url 'write_exam' %}"> Write Exam</a> </li>
+						
 					</ul>
 				</li>
 				
