@@ -84,8 +84,9 @@ def save_exam_schedule_details(exam, request):
     exam.end_date = datetime.strptime(request.POST['end_date'], '%d/%m/%Y')
     course = Course.objects.get(id = request.POST['course'])
     semester = Semester.objects.get(id = request.POST['semester'])
-    student = Student.objects.get(id=request.POST['student'])
-    exam.student = student
+    if request.POST['student']:
+        student = Student.objects.get(id=request.POST['student'])
+        exam.student = student
     exam.exam_name = course.course + '-' +semester.semester
     exam.no_subjects = request.POST['no_subjects']
     exam.exam_total = request.POST['exam_total']
