@@ -867,10 +867,17 @@ function ResultController($scope, $element, $http, $timeout, share, $location){
     $scope.get_results = function(){
         var url = '/student_result/?exam_resgistration_no='+$scope.exam_resgistration_no;
         $http.get(url).success(function(data) {
-            $scope.exam_results = data.exam_results;
-            $scope.student_details = data.student_details[0];
-            console.log($scope.student_details);
-            console.log($scope.exam_results);
+            console.log(data.result)
+            if (data.result == 'Ok'){
+                $scope.exam_results = data.exam_results;
+                $scope.student_details = data.student_details[0];
+                console.log($scope.student_details);
+                console.log($scope.exam_results);
+            }    
+            if (data.result == 'error'){
+                $scope.error_msg = data.message
+                console.log($scope.error_msg)
+            }
         }).error(function(data, status)
         {
             console.log(data || "Request failed");

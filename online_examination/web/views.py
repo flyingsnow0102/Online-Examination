@@ -105,30 +105,41 @@ class StudentResults(View):
             mark_percentage=0,
             exam_resgistration_no = request.GET.get('exam_resgistration_no')
             print(exam_resgistration_no)
-            answer_sheets = AnswerSheet.objects.filter(student__registration_no=exam_resgistration_no)
-            print answer_sheets
-            student_data = Student.objects.get(registration_no=exam_resgistration_no)
-            print(student_data)
-            student_details.append(student_data.get_json_data())
-            print(student_details)
+            try:
+                student_data = Student.objects.get(registration_no=exam_resgistration_no)
+                student_details.append(student_data.get_json_data())
+                answer_sheets = AnswerSheet.objects.filter(student__registration_no=exam_resgistration_no)
             
-            for answer_sheet in answer_sheets:
-                result=answer_sheet.get_json_data()
-                # exam_results.append(answer_sheet.get_json_data())
-                mark_percentage=(float(result['total_mark'])/float(result['subject_total_mark']))*100
-                print(mark_percentage)
-                result['percentage'] = mark_percentage;
-                print("hii")
-                print(result)
-                exam_results.append(result)
-                # exam_results.append('percentage':mark_percentage)
+                if len(answer_sheets) == 0:
 
-            print exam_results
-            res = {
-                    'result': 'Ok',
-                    'exam_results': exam_results,
-                    'student_details':student_details,
+                    res = {
+                        'result': 'error',
+                        'message':'Student with this Registration number doesnt write any exams'
+                    }
+                else :    
+                    for answer_sheet in answer_sheets:
+                        result=answer_sheet.get_json_data()
+                        # exam_results.append(answer_sheet.get_json_data())
+                        mark_percentage=(float(result['total_mark'])/float(result['subject_total_mark']))*100
+                        print(mark_percentage)
+                        result['percentage'] = mark_percentage;
+                        exam_results.append(result)
+                        # exam_results.append('percentage':mark_percentage)
+
+                        print exam_results
+                        res = {
+                            'result': 'Ok',
+                            'exam_results': exam_results,
+                            'student_details':student_details,
+                        }
+
+            except:
+                res = {
+                    'result': 'error',
+                    'message':'There is no student with this Registration number'
                 }
+            
+            
             response = simplejson.dumps(res)
             return HttpResponse(response, mimetype='application/json')
         return render(request, 'student_results.html', {}) 
