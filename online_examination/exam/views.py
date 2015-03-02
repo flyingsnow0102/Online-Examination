@@ -242,9 +242,9 @@ class EditExamSchedule(View):
             # print("qeqwe")
             exam_schedule_id = kwargs['exam_schedule_id']
             exam = Exam.objects.get(id=exam_schedule_id)
-            exam.subjects = []
+            # exam.subjects = []
             # exam.save()
-            print(exam.start_date, current_date,exam,exam.start_date > current_date)
+            print(exam,exam.start_date > current_date)
             if exam.start_date > current_date: 
                 print("eee")   
                 save_exam_schedule_details(exam, request)
@@ -252,9 +252,11 @@ class EditExamSchedule(View):
                     'result': 'Ok',
                 }
             else:
+                print("xxx")
+                print(exam)
                 res = {
                     'result': 'error',
-                    'message': 'You cannot edit exam schedule, as the exam is scheduled today'
+                    'message': 'You cannot edit exam schedule, as the exam is scheduled today',
                 }
             
             response = simplejson.dumps(res)
