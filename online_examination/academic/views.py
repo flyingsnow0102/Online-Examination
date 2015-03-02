@@ -47,7 +47,7 @@ class AddStudent(View):
                         student.course = course
                         # student.semester = semester
                         student.father_name = request.POST['father_name']
-                        student.pass_out_year = result.POST['pass_out_year']
+                        student.pass_out_year = request.POST['pass_out_year']
                         student.specialization = request.POST['specialization']
                         student.age = request.POST['age']
                         student.source = request.POST['source_of_information']
