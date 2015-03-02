@@ -345,6 +345,7 @@ function EditExamController($scope, $element, $http, $timeout, share, $location)
                 'course': $scope.exam_schedule.course,
                 'batch': $scope.exam_schedule.batch,
                 'semester': $scope.exam_schedule.semester,
+                'student': $scope.exam_schedule.student,
                 'start_date': $scope.exam_schedule.start_date,
                 'end_date': $scope.exam_schedule.end_date,
                 'exam_total': $scope.exam_schedule.exam_total,
