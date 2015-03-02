@@ -47,6 +47,7 @@ class AddStudent(View):
                         student.course = course
                         # student.semester = semester
                         student.father_name = request.POST['father_name']
+                        student.pass_out_year = request.POST['pass_out_year']
                         student.specialization = request.POST['specialization']
                         student.age = request.POST['age']
                         student.source = request.POST['source_of_information']
@@ -153,6 +154,7 @@ class ViewStudentDetails(View):
                     'course_id': student.course.id if student.course.course else '',
                     # 'semester': student.semester.semester if student.semester.semester else '',
                     'specialization': student.specialization if student.specialization else '',
+                    'pass_out_year': student.pass_out_year if student.pass_out_year else '',
                     'father_name': student.father_name if student.father_name else '',
                     # 'course_id': student.semester.id if student.semester.semester else '',
                     'mobile_number': student.mobile_number if student.mobile_number else '',
@@ -209,6 +211,7 @@ class EditStudentDetails(View):
                     'course': student.course.course if student.course.course else '',
                     'course_id': student.course.id if student.course.course else '',
                     # 'semester': student.semester.semester if student.semester.semester else '',
+                    'pass_out_year': student.pass_out_year if student.pass_out_year else '', 
                     'specialization': student.specialization if student.specialization else '',
                     'father_name': student.father_name if student.father_name else '',
                     # 'course_id': student.semester.id if student.semester.semester else '',
@@ -251,6 +254,7 @@ class EditStudentDetails(View):
         student.father_name = student_data['father_name']
         student.address = student_data['address']
         student.age = student_data['age']
+        student.pass_out_year = student_data['pass_out_year']
         student.hall_ticket_no = student_data['hall_ticket_no']
         student.dob = datetime.strptime(student_data['dob'], '%d/%m/%Y')
         student.address = student_data['address']
