@@ -177,20 +177,24 @@ class AnswerSheet(models.Model):
         total = 0
         for question_data in questions:
             student_answer = StudentAnswer()
-            question = Question.objects.get(id=question_data['id'])
-            choosen_choice = Choice.objects.get(id=question_data['chosen_answer'])
-            
-            student_answer.question = question
-            student_answer.choosen_choice = choosen_choice
-            student_answer.save()
-            self.student_answers.add(student_answer)
-            for correct_choice in question.choices.all().order_by('id'):
-                if correct_choice.choice == choosen_choice.choice:
-                    if correct_choice.correct_answer == True:
-                        student_answer.mark = question.mark
-                        student_answer.is_correct = True
-                        total = float(total) + float(student_answer.mark)
-                        student_answer.save()
+            if question_data['id']:
+                question = Question.objects.get(id=question_data['id'])
+                print(question_data['chosen_answer'])
+                if question_data['chosen_answer']:
+                    choosen_choice = Choice.objects.get(id=question_data['chosen_answer'])
+                    student_answer.choosen_choice = choosen_choice
+                    for correct_choice in question.choices.all().order_by('id'):
+                        if correct_choice.choice == choosen_choice.choice:
+                            if correct_choice.correct_answer == True:
+                                student_answer.mark = question.mark
+                                student_answer.is_correct = True
+                                total = float(total) + float(student_answer.mark)
+                                student_answer.save()
+                student_answer.question = question
+                
+                student_answer.save()
+                self.student_answers.add(student_answer)
+                
         self.total_mark = total
         self.save()
         if self.total_mark >= self.subject.pass_mark:

@@ -624,16 +624,16 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
         'exam': '',
         'subject': '',
         'questions': [ 
-            // {
-            // 'question': '',
-            // 'choices': [
-            //         {
-            //             'choice': '', 
-            //         }
-            //     ],
+            {
+            'question': '',
+            'choices': [
+                    {
+                        'choice': '', 
+                    }
+                ],
 
-            // 'chosen_answer': '',
-            // }
+            'chosen_answer': '',
+            }
 
             
         ],
@@ -786,7 +786,7 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
                 var time = hours + ':' + minutes + ':' + seconds;
                 return time;
             }
-            console.log($scope.duration_parameter,(($scope.duration_parameter != '') || ($scope.duration_parameter !=undefined)) && ($scope.duration_parameter=='Hours'))
+            // console.log($scope.duration_parameter,(($scope.duration_parameter != '') || ($scope.duration_parameter !=undefined)) && ($scope.duration_parameter=='Hours'))
             if ((($scope.duration_parameter != '') || ($scope.duration_parameter !=undefined)) && ($scope.duration_parameter=='Hours'))
                 var count = String($scope.duration*3600); // it's 00:01:02
             else if((($scope.duration_parameter != '') || ($scope.duration_parameter !=undefined)) && ($scope.duration_parameter=='Minutes'))
@@ -795,7 +795,7 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
 
 
                 // console.log(count);
-                console.log(count)
+                // console.log(count)
                 if (parseInt(count) <= 0) {
                     clearInterval(counter);
                     return;
