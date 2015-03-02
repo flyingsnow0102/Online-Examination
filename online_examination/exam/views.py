@@ -80,11 +80,14 @@ class SaveQuestions(View):
 
 
 def save_exam_schedule_details(exam, request):
+    print("wwwww")
     exam.start_date = datetime.strptime(request.POST['start_date'], '%d/%m/%Y')
     exam.end_date = datetime.strptime(request.POST['end_date'], '%d/%m/%Y')
     course = Course.objects.get(id = request.POST['course'])
     semester = Semester.objects.get(id = request.POST['semester'])
+    print(exam.start_date,exam.end_date,course,semester)
     if request.POST['student']:
+        print("mmm")
         student = Student.objects.get(id=request.POST['student'])
         exam.student = student
     exam.exam_name = course.course + '-' +semester.semester
@@ -92,7 +95,8 @@ def save_exam_schedule_details(exam, request):
     exam.exam_total = request.POST['exam_total']
     subjects = ast.literal_eval(request.POST['subjects'])
     exam.save()
-    for subject in subjects:        
+    for subject in subjects:
+        print(subject)        
         sub, created = Subject.objects.get_or_create(subject_name=subject['subject_name'])
         sub.duration = subject['duration']
         sub.duration_parameter = subject['duration_parameter']
@@ -240,8 +244,9 @@ class EditExamSchedule(View):
             exam = Exam.objects.get(id=exam_schedule_id)
             exam.subjects = []
             # exam.save()
-            print(exam)
-            if exam.start_date < current_date:    
+            print(exam.start_date, current_date,exam,exam.start_date > current_date)
+            if exam.start_date > current_date: 
+                print("eee")   
                 save_exam_schedule_details(exam, request)
                 res = {
                     'result': 'Ok',
