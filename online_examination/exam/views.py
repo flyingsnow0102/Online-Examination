@@ -84,8 +84,9 @@ def save_exam_schedule_details(exam, request):
     exam.end_date = datetime.strptime(request.POST['end_date'], '%d/%m/%Y')
     course = Course.objects.get(id = request.POST['course'])
     semester = Semester.objects.get(id = request.POST['semester'])
-    student = Student.objects.get(id=request.POST['student'])
-    exam.student = student
+    if request.POST['student']:
+        student = Student.objects.get(id=request.POST['student'])
+        exam.student = student
     exam.exam_name = course.course + '-' +semester.semester
     exam.no_subjects = request.POST['no_subjects']
     exam.exam_total = request.POST['exam_total']
@@ -107,6 +108,7 @@ class SaveExamSchedule(View):
             try:
                 student = Student.objects.get(id=request.POST['student'])
             except:
+                print "Exception"
                 student = ''
             print student,"student"
             try:
@@ -173,23 +175,28 @@ class GetExams(View):
         exams = {}
         if request.is_ajax():
             try:
-                exams = Exam.objects.get(course=course_id, semester=semester_id,student__user=request.user)
-            except:
-                exams = Exam.objects.filter(course=course_id, semester=semester_id)
-            for exam in exams:
+                exam = Exam.objects.get(course=course_id, semester=semester_id,student__user=request.user)
+                exams = exam.get_json_data()
                 if request.GET.get('from', '') == 'write_exam':
                     exams = exam.get_json_data('x')
                 else:
                     exams = exam.get_json_data()
-                try:
-                    student = Student.objects.get(user=request.user)
-                    exams.update({
-                        'student_name':student.student_name,
-                        'registration_no':student.registration_no,
-                        'hall_ticket_no':student.hall_ticket_no,
-                        }) 
-                except:
-                    pass 
+            except:
+                exam = Exam.objects.get(course=course_id, semester=semester_id,student=None)
+                # for exam in exams:
+                if request.GET.get('from', '') == 'write_exam':
+                    exams = exam.get_json_data('x')
+                else:
+                    exams = exam.get_json_data()
+            try:
+                student = Student.objects.get(user=request.user)
+                exams.update({
+                    'student_name':student.student_name,
+                    'registration_no':student.registration_no,
+                    'hall_ticket_no':student.hall_ticket_no,
+                    }) 
+            except:
+                pass 
             print exams
             res = {
                 'result': 'ok',
