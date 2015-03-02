@@ -68,7 +68,7 @@ class Exam(models.Model):
             'student': self.student.id if self.student else '',
             'course_name': self.course.course,
             'semester_name': self.semester.semester,
-            'student_name' : self.student.name if self.student else '',   
+            'student_name' : self.student.student_name if self.student else '',   
             'start_date': self.start_date.strftime('%d/%m/%Y') ,
             'end_date': self.end_date.strftime('%d/%m/%Y') ,
             'no_subjects': self.no_subjects,

@@ -548,7 +548,7 @@ function QuestionController($scope, $element, $http, $timeout, share, $location)
         $scope.validation_error = "";
         $scope.exam_name = '';
         $scope.subjects = '';    
-        $scope.url = '/exam/get_exam/'+ $scope.question_details.course+ '/'+ $scope.question_details.semester+ '/';
+        $scope.url = '/exam/get_exam_create/'+ $scope.question_details.course+ '/'+ $scope.question_details.semester+ '/';
         $http.get($scope.url).success(function(data)
         {   console.log(data.exams)
             if (data.result == 'ok') {

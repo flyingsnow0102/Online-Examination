@@ -216,7 +216,30 @@ class GetExams(View):
             response = simplejson.dumps(res)
             return HttpResponse(response, mimetype='application/json')
 
-
+class GetExamCreate(View):
+    def get(self, request, *args, **kwargs):
+        
+        course_id = kwargs['course_id']
+        semester_id = kwargs['semester_id']
+        print(course_id,semester_id)
+        if request.is_ajax():
+            try:
+                print("rrr")
+                exam = Exam.objects.get(course=course_id, semester=semester_id)
+                print(exam)
+                exams = exam.get_json_data()
+                print(exams)
+                res = {
+                'result': 'ok',
+                'exams': exams,
+                } 
+            except:
+                res = {
+                'result': 'error',
+                
+                }
+            response = simplejson.dumps(res)
+            return HttpResponse(response, mimetype='application/json')     
 
 class DeleteExamSchedule(View):
     def get(self, request, *args, **kwargs):
