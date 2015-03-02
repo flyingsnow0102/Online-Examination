@@ -186,26 +186,33 @@ class GetExams(View):
                 else:
                     exams = exam.get_json_data()
             except:
-                exam = Exam.objects.get(course=course_id, semester=semester_id,student=None)
+                try:
+                    exam = Exam.objects.get(course=course_id, semester=semester_id,student=None)
+                    if request.GET.get('from', '') == 'write_exam':
+                        exams = exam.get_json_data('x')
+                    else:
+                        exams = exam.get_json_data()
+                except:
+                    res = {
+                        'result': 'error',
+                        'message': 'No exams Scheduled',
+                    }
                 # for exam in exams:
-                if request.GET.get('from', '') == 'write_exam':
-                    exams = exam.get_json_data('x')
-                else:
-                    exams = exam.get_json_data()
-            try:
-                student = Student.objects.get(user=request.user)
-                exams.update({
-                    'student_name':student.student_name,
-                    'registration_no':student.registration_no,
-                    'hall_ticket_no':student.hall_ticket_no,
-                    }) 
-            except:
-                pass 
-            print exams
-            res = {
-                'result': 'ok',
-                'exams': exams,
-            }       
+            if exams:    
+                try:
+                    student = Student.objects.get(user=request.user)
+                    exams.update({
+                        'student_name':student.student_name,
+                        'registration_no':student.registration_no,
+                        'hall_ticket_no':student.hall_ticket_no,
+                        }) 
+                except:
+                    pass 
+                print exams
+                res = {
+                    'result': 'ok',
+                    'exams': exams,
+                }       
     
             # except Exception as ex:
             #     print "Exception == ", str(ex),
