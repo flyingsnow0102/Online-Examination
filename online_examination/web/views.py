@@ -100,7 +100,9 @@ class StudentResults(View):
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
             exam_results = []
+            result={}
             student_details = []
+            mark_percentage=0,
             exam_resgistration_no = request.GET.get('exam_resgistration_no')
             print(exam_resgistration_no)
             answer_sheets = AnswerSheet.objects.filter(student__registration_no=exam_resgistration_no)
@@ -111,7 +113,15 @@ class StudentResults(View):
             print(student_details)
             
             for answer_sheet in answer_sheets:
-                exam_results.append(answer_sheet.get_json_data()) 
+                result=answer_sheet.get_json_data()
+                # exam_results.append(answer_sheet.get_json_data())
+                mark_percentage=(float(result['total_mark'])/float(result['subject_total_mark']))*100
+                print(mark_percentage)
+                result['percentage'] = mark_percentage;
+                print("hii")
+                print(result)
+                exam_results.append(result)
+                # exam_results.append('percentage':mark_percentage)
 
             print exam_results
             res = {

@@ -220,6 +220,7 @@ class AnswerSheet(models.Model):
             'status':self.status if self.status else 'Fail',
             'total_mark': self.total_mark if self.total_mark else 0,
             'subject' : self.subject.id,
+            'subject_total_mark':self.subject.total_mark,
             'student_answers': student_answers,
             'is_completed': self.is_completed if self.is_completed else '',
             'is_attempted': self.is_attempted if self.is_attempted else '',
