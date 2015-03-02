@@ -36,6 +36,7 @@ function save_new_student($http, $scope) {
             'course': $scope.course,
             // 'semester': $scope.semester,
             'specialization': $scope.specialization,
+            'pass_out_year': $scope.pass_out_year,
             'father_name': $scope.father_name,
             'source_of_information':$scope.source_of_information,
             'dob': $scope.dob,
