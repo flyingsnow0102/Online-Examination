@@ -14,7 +14,20 @@ class Subject(models.Model):
     
     def __unicode__(self):
         return str(self.subject_name)
-
+    
+    def get_json_data(self):
+        subject_data = {
+            'subject_id': self.id if self.id else '',
+            'subject': self.subject_name if self.subject_name else '',
+            'subject_name' : self.subject_name if self.subject_name else '',
+            'Duration': self.duration + '-' +self.duration_parameter,
+            'duration': self.duration,
+            'duration_parameter': self.duration_parameter,
+            'duration_no': self.duration,
+            'total_mark': self.total_mark if self.total_mark else '',
+            'pass_mark': self.pass_mark if self.pass_mark else '',
+        }
+        return subject_data
     class Meta:
         verbose_name = 'Subject'
         verbose_name_plural = 'Subject'
@@ -41,6 +54,8 @@ class Exam(models.Model):
     def get_json_data(self, x=None):
         subjects_data = []
         for subject in self.subjects.all():
+            questions = Question.objects.filter(subject=subject)
+            # if questions.count() == 0:
             subject_dict = {
                 'subject_id': subject.id if subject.id else '',
                 'subject': subject.subject_name if subject.subject_name else '',
@@ -58,7 +73,8 @@ class Exam(models.Model):
                 if question:
                     subjects_data.append(subject_dict)
             else:
-                subjects_data.append(subject_dict) 
+                if question == None:
+                    subjects_data.append(subject_dict) 
             
         exam_data = {
             'exam_name':self.exam_name,
@@ -134,6 +150,7 @@ class Question(models.Model):
                         })
         question_data = {
             'question': self.question ,
+            'mark': self.mark,
             'id': self.id,
             'choices': choices,
             'chosen_answer': '',

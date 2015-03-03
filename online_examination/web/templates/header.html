@@ -46,7 +46,8 @@
 						{% if user.is_superuser %}
 							<li> <a href="{% url 'schedule_exam' %}"> Exam</a> </li>
 							<li> <a href="{% url 'create_exam' %}"> Create Exam</a> </li>
-							<li> <a href="{% url 'marks' %}"> Create Questions</a> </li>
+							<li> <a href="{% url 'list_questions' %}">  Questions</a> </li>
+							<li> <a href="{% url 'create_questions' %}"> Create Questions</a> </li>
 						{% else %}
 							<li> <a href="{% url 'write_exam' %}"> Write Exam</a> </li>
 						{% endif %}

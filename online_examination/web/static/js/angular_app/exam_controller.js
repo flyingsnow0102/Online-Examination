@@ -399,7 +399,40 @@ function EditExamController($scope, $element, $http, $timeout, share, $location)
         $scope.exam_schedule.exam_total = total;
     }    
 }
+function ListQuestionController($scope, $element, $http, $timeout, share, $location){
+    $scope.init = function(csrf_token)
+    {   
+        $scope.csrf_token = csrf_token;
+        $http.get('/exam/list_subject/').success(function(data)
+        {   
+            $scope.subjects = data.subjects;
 
+        }).error(function(data, status)
+        {
+            console.log(data || "Request failed");
+        });
+    }
+    
+    $scope.get_question_paper = function(){
+        console.log($scope.subject.subject_id)
+        var url = '/exam/list_questions/?subject='+$scope.subject.subject_id;
+        $http.get(url).success(function(data) {
+            $scope.questions = '';
+            $scope.questions = data.questions;
+            console.log($scope.questions)
+            paginate($scope.questions,$scope);
+        }).error(function(data, status)
+        {
+            console.log(data || "Request failed");
+        });
+    }
+    $scope.select_page = function(page){
+        select_page(page, $scope.questions, $scope);
+    }
+    $scope.range = function(n) {
+        return new Array(n);
+    }
+}
 function QuestionController($scope, $element, $http, $timeout, share, $location)
 {
     $scope.init = function(csrf_token)
@@ -432,6 +465,7 @@ function QuestionController($scope, $element, $http, $timeout, share, $location)
         $scope.subjects = [];
         $scope.visible_list = [];
         get_course_list($scope, $http);
+        
         var date_pick = new Picker.Date($$('#start_date'), {
             timePicker: false,
             positionOffset: {x: 5, y: 0},
@@ -448,6 +482,7 @@ function QuestionController($scope, $element, $http, $timeout, share, $location)
             format:'%d/%m/%Y',
         });
     }
+    
     $scope.get_semester = function(){
         $scope.edit_marks = false;
         $scope.display_marks = false;
@@ -505,7 +540,7 @@ function QuestionController($scope, $element, $http, $timeout, share, $location)
             }
             $http({
                 method: 'post',
-                url: "/exam/save_marks/",
+                url: "/exam/save_questions/",
                 data: $.param(params),
                 headers: {
                     'Content-Type' : 'application/x-www-form-urlencoded'
@@ -515,7 +550,7 @@ function QuestionController($scope, $element, $http, $timeout, share, $location)
                     $scope.error_flag=true;
                     $scope.message = data.message;
                 } else {
-                    document.location.href ='/exam/marks/';
+                    document.location.href ='/exam/create_questions/';
                 }
             }).error(function(data, success){
                 $scope.error_flag=true;
@@ -574,6 +609,101 @@ function QuestionController($scope, $element, $http, $timeout, share, $location)
     }
     $scope.range = function(n) {
         return new Array(n);
+    }
+}
+function EditQuestionController($scope, $element, $http, $timeout, share, $location)
+{
+    $scope.init = function(csrf_token,question_id)
+    {
+        
+        $scope.csrf_token = csrf_token;
+        $scope.error_flag = false;
+        $scope.question = {
+            'id': '',
+            'question': '',
+            'choices': [
+                {
+                    'choice': '', 
+                    'correct_answer': false,
+                }
+            ],
+            'mark': '', 
+           
+        };
+        var url = '/exam/edit_question/'+question_id+ '/';
+        $http.get(url).success(function(data) {
+            $scope.question = '';
+            $scope.question = data.question;
+        }).error(function(data, status)
+        {
+            console.log(data || "Request failed");
+        });
+        $scope.subjects = [];
+        $scope.visible_list = [];
+    }
+
+    
+    $scope.validate_marks = function() {        
+        $scope.validation_error = '';
+        $scope.flag = 0;
+        var total = 0;
+        if(($scope.question.question=='')|| ($scope.question.question==undefined)){
+            $scope.validation_error = "Please Enter a question " ;
+            return false;
+        }else if($scope.question.choices.lenght==0){
+            $scope.validation_error = "Please Enter a choice " ;
+            return false;
+        }
+        else{
+            for(i=0;i<$scope.question.choices.length; i++){
+                if($scope.question.choices[i].choice== ''){
+                    $scope.validation_error = "Please Enter a Choice " ;
+                return false;
+                }
+            }
+        }return true;
+    }
+
+    $scope.save_question = function() {
+        if($scope.validate_marks()){ 
+                for(j=0;j<$scope.question.choices.length;j++){
+                    if($scope.question.choices[j].correct_answer == true){
+                        $scope.question.choices[j].correct_answer = "true";
+                    }else{
+                        $scope.question.choices[j].correct_answer = "false";
+                    }
+                }
+            console.log($scope.question)
+            params = { 
+                'question': angular.toJson($scope.question),
+                "csrfmiddlewaretoken" : $scope.csrf_token
+            }
+            $http({
+                method: 'post',
+                url: "/exam/edit_question/"+$scope.question.id +'/',
+                data: $.param(params),
+                headers: {
+                    'Content-Type' : 'application/x-www-form-urlencoded'
+                }
+            }).success(function(data, status) {
+                if (data.result == 'error'){
+                    $scope.error_flag=true;
+                    $scope.message = data.message;
+                } else {
+                    document.location.href ='/exam/list_questions/';
+                }
+            }).error(function(data, success){
+                $scope.error_flag=true;
+                $scope.message = data.message;
+            });
+        }  
+    } 
+    $scope.add_choices = function(){
+        $scope.question.choices.push({
+           
+            'choice': '', 
+            'correct_answer': false,
+        });
     }
 }
 function calculate_endtime($scope, $http, duration_parameter, duration) {

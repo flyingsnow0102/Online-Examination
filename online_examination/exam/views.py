@@ -295,6 +295,44 @@ class EditExamSchedule(View):
             'exam_schedule_id': exam_schedule_id
         })
 
+class GetSubjects(View):
+
+    def get(self, request, *args, **kwargs):
+        subject_list = []
+        if request.is_ajax():
+            subjects = Subject.objects.all()
+            for subject in subjects:
+                subject_list.append(subject.get_json_data())
+            res = {
+                'result': 'Ok',
+                'subjects': subject_list,
+            }
+        response = simplejson.dumps(res)
+        return HttpResponse(response, mimetype='application/json')
+
+class ListQuestions(View):
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            try:
+                questions_list = []
+                questions = Question.objects.filter(subject=request.GET.get('subject', ''))
+                
+                for question in questions:
+                    questions_list.append(question.get_json_data())
+                res = {
+                    'result': 'Ok',
+                    'questions': questions_list,
+                }
+            except:
+                res = {
+                'result': 'error',
+                'message': 'No questions found for this subject'
+                }
+            response = simplejson.dumps(res)
+            return HttpResponse(response, mimetype='application/json')
+        return render(request, 'list_questions.html', {})
+
+
 class QuestionPaper(View):
 
     def get(self, request, *args, **kwargs):
@@ -338,6 +376,8 @@ class QuestionPaper(View):
         return HttpResponse(response, mimetype='application/json')
 
 class CreateAnswerSheet(View):
+
+
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
             answer_sheet_details =  ast.literal_eval(request.POST['answer_details'])
@@ -361,6 +401,79 @@ class CreateAnswerSheet(View):
                 
         response = simplejson.dumps(res)
         return HttpResponse(response, mimetype='application/json')
+
+class EditQuestion(View):
+
+    def get(self, request, *args, **kwargs):
+        question_id = kwargs['question_id']
+        print question_id
+        if request.is_ajax():
+            try:
+                
+                question = Question.objects.get(id=question_id)
+                choices = []
+                if question.choices:
+                    if question.choices.all().count() > 0:
+                        for choice in question.choices.all().order_by('id'):
+                            choices.append({
+                                'id': choice.id,
+                                'choice': choice.choice,
+                                'correct_answer': choice.correct_answer,
+                            })  
+                question = {
+                    'question': question.question,
+                    'id': question.id,
+                    'mark': question.mark,
+                    'choices':choices,
+                }
+                res = {
+                    'result': 'Ok',
+                    'question': question,
+                }
+            except Exception as ex:
+                print str(ex)
+                res = {
+                'result': 'error',
+                'message': 'No questions found for this subject'
+                }
+            response = simplejson.dumps(res)
+            return HttpResponse(response, mimetype='application/json')
+        return render(request, 'edit_questions.html', {'question_id': question_id})
+    
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            question_id = kwargs['question_id']
+            # try:
+            question_detail = ast.literal_eval(request.POST['question'])
+            question = Question.objects.get(id=question_id)
+            question.question = question_detail['question']
+            question.mark = question_detail['mark']
+            choices = question_detail['choices']
+            for choice_data in choices:
+                choice = Choice.objects.create(choice=choice_data['choice'])
+                if choice_data['correct_answer'] == 'true':
+                    choice.correct_answer = True
+                else:
+                    choice.correct_answer = False
+                choice.save()
+                question.choices.add(choice)
+            question.save()
+            res = {
+                'result': 'ok',
+            }
+            # except:
+            #     res = {
+            #         'result': 'error',
+            #     }
+        response = simplejson.dumps(res)
+        return HttpResponse(response, mimetype='application/json')
+
+class DeleteQuestion(View):
+    def get(self, request, *args, **kwargs):
+        question_id = kwargs['question_id']       
+        question = Question.objects.filter(id=question_id)                          
+        question.delete()
+        return HttpResponseRedirect(reverse('list_questions'))
 
 class WriteExam(View):
 
