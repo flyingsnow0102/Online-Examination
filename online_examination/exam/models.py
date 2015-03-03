@@ -206,17 +206,23 @@ class AnswerSheet(models.Model):
         self.save()
 
     def get_json_data(self):
+
         student_answers = []
         if self.student_answers:
+            
             if self.student_answers.all().count() > 0:
+                
                 for student_answer in self.student_answers.all().order_by('-id'):
+                    print(student_answer)
                     student_answers.append({
-                        'id': student_answer.id,
-                        'question': student_answer.question.id,
-                        'choosen_choice': student_answer.choosen_choice.id,
+                        'id': student_answer.id if student_answer.id else '',
+                        'question': student_answer.question.id if student_answer.question else'',
+                        'choosen_choice': student_answer.choosen_choice.id if student_answer.choosen_choice else '',
                         'is_correct':student_answer.is_correct if student_answer.is_correct else '',
                         'mark': student_answer.mark if student_answer.mark else '',
                         })
+                    print("oo")
+                    print(student_answers)
         answer_sheet_data = {
             'student': self.student.id,
             'student_name': self.student.student_name,
