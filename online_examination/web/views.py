@@ -107,18 +107,23 @@ class StudentResults(View):
             print(exam_resgistration_no)
             try:
                 student_data = Student.objects.get(registration_no=exam_resgistration_no)
+                print(student_data)
                 student_details.append(student_data.get_json_data())
+                print(student_details)
                 answer_sheets = AnswerSheet.objects.filter(student__registration_no=exam_resgistration_no)
-            
+                print(answer_sheets)
                 if len(answer_sheets) == 0:
-
+                    
                     res = {
                         'result': 'error',
                         'message':'Student with this Registration number doesnt write any exams'
                     }
-                else :    
+                else : 
+                    print("ok")   
                     for answer_sheet in answer_sheets:
+                        print(answer_sheet)
                         result=answer_sheet.get_json_data()
+                        print(result)
                         # exam_results.append(answer_sheet.get_json_data())
                         mark_percentage=(float(result['total_mark'])/float(result['subject_total_mark']))*100
                         print(mark_percentage)

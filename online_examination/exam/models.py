@@ -192,12 +192,13 @@ class AnswerSheet(models.Model):
 
     def set_attributes(self, answer_data):   
         questions = answer_data['questions']
+        
         total = 0
         for question_data in questions:
             student_answer = StudentAnswer()
             if question_data['id']:
                 question = Question.objects.get(id=question_data['id'])
-                print(question_data['chosen_answer'])
+                
                 if question_data['chosen_answer']:
                     choosen_choice = Choice.objects.get(id=question_data['chosen_answer'])
                     student_answer.choosen_choice = choosen_choice
@@ -222,17 +223,23 @@ class AnswerSheet(models.Model):
         self.save()
 
     def get_json_data(self):
+
         student_answers = []
         if self.student_answers:
+            
             if self.student_answers.all().count() > 0:
+                
                 for student_answer in self.student_answers.all().order_by('-id'):
+                    print(student_answer)
                     student_answers.append({
-                        'id': student_answer.id,
-                        'question': student_answer.question.id,
-                        'choosen_choice': student_answer.choosen_choice.id,
+                        'id': student_answer.id if student_answer.id else '',
+                        'question': student_answer.question.id if student_answer.question else'',
+                        'choosen_choice': student_answer.choosen_choice.id if student_answer.choosen_choice else '',
                         'is_correct':student_answer.is_correct if student_answer.is_correct else '',
                         'mark': student_answer.mark if student_answer.mark else '',
                         })
+                    print("oo")
+                    print(student_answers)
         answer_sheet_data = {
             'student': self.student.id,
             'student_name': self.student.student_name,
