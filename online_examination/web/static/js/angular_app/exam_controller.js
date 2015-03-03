@@ -624,16 +624,16 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
         'exam': '',
         'subject': '',
         'questions': [ 
-            {
-            'question': '',
-            'choices': [
-                    {
-                        'choice': '', 
-                    }
-                ],
+            // {
+            // 'question': '',
+            // 'choices': [
+            //         {
+            //             'choice': '', 
+            //         }
+            //     ],
 
-            'chosen_answer': '',
-            }
+            // 'chosen_answer': '',
+            // }
 
             
         ],

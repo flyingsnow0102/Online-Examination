@@ -386,6 +386,7 @@ class WriteExam(View):
 
         if request.is_ajax():
             answer_sheet_details =  ast.literal_eval(request.POST['answer_details'])
+            print(answer_sheet_details)
             # try:
             answer_sheet = AnswerSheet.objects.get(id=answer_sheet_details['id'])
             answer_sheet_data = answer_sheet.set_attributes(answer_sheet_details)
