@@ -174,12 +174,13 @@ class AnswerSheet(models.Model):
 
     def set_attributes(self, answer_data):   
         questions = answer_data['questions']
+        
         total = 0
         for question_data in questions:
             student_answer = StudentAnswer()
             if question_data['id']:
                 question = Question.objects.get(id=question_data['id'])
-                print(question_data['chosen_answer'])
+                
                 if question_data['chosen_answer']:
                     choosen_choice = Choice.objects.get(id=question_data['chosen_answer'])
                     student_answer.choosen_choice = choosen_choice
