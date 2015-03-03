@@ -136,6 +136,7 @@ class Question(models.Model):
             'question': self.question ,
             'id': self.id,
             'choices': choices,
+            'chosen_answer': '',
         }
         return question_data
 
