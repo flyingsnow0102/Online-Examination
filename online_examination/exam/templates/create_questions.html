@@ -73,7 +73,7 @@
 						<div class="row">
 							<div class="col-lg-10 col-xs-8">
 								<div class="col-lt">
-									<div class="col-xs-12 col-border">
+									<div class="col-xs-12 col-border">	
 										<p>Add Questions</p>
 										<div>
 											<label>Total Subject Marks: [[subject_total_mark]]</label>
@@ -94,7 +94,8 @@
 					<div class="col-xs-12" >
 						<div  ng-repeat="question in question_details.questions" class="col-lg-12 col-bottom-box">
 							<div class="form-group">
-									<label for="inputEmail3" class="col-xs-12 control-label">Questions</label>
+
+									<label for="inputEmail3" class="col-xs-12 control-label">[[$index+1]]. Question</label>
 								<div class="col-xs-12">
 							
 									<input class="form-control" name="" type="text" value="" placeholder="Questions"  ng-model="question.question">

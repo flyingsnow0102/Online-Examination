@@ -14,6 +14,7 @@ import string
 from random import sample, choice
 
 from college.models import Course, Semester
+from exam.models import Exam
 
 class AddStudent(View):
     def get(self, request, *args, **kwargs):
@@ -137,6 +138,7 @@ class ViewStudentDetails(View):
         
         student_id = kwargs['student_id']
         ctx_student_data = []
+        exam = {}
         if request.is_ajax():
             try:
                 student = Student.objects.get(id = student_id)
@@ -161,15 +163,29 @@ class ViewStudentDetails(View):
                     'email': student.email if student.email else '',
                     'photo': student.photo.name if student.photo.name else '',
                     'guardian_mobile_number': student.guardian_mobile_number if student.guardian_mobile_number else '',
+                    
                 })
+                try:
+                    
+                    exam = Exam.objects.get(student=student)
+                    exam = {
+                    'exam_course': exam.course.course if exam else '',
+                    'exam_semester': exam.semester.semester if exam else '',
+                    'start_date': exam.start_date.strftime('%d/%m/%Y') if exam else '',
+                    'end_date': exam.end_date.strftime('%d/%m/%Y') if exam else '',
+                    }
+                except Exception as ex:
+                    print str(ex)
                 res = {
                     'result': 'ok',
                     'student': ctx_student_data,
+                    'exam': exam,
                 }
             except Exception as ex:
                 res = {
                     'result': 'error: ' + str(ex),
                     'student': ctx_student_data,
+                    'exam': exam,
                 }
             status = 200
             response = simplejson.dumps(res)

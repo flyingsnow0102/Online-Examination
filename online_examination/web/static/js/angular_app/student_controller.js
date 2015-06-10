@@ -324,6 +324,7 @@ function StudentListController($scope, $http, $element, $location, $timeout) {
         $http.get($scope.url).success(function(data)
         {
             $scope.student = data.student[0];
+            $scope.exam = data.exam;
         }).error(function(data, status)
         {
             console.log(data || "Request failed");
