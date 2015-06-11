@@ -952,3 +952,10 @@ ol.question li{
 	box-sizing: border-box;
 
 }
+.selected_page {
+	background: none repeat scroll 0 0 #2E6AB1;
+}
+.pagination li a:hover, .pagination li span:hover, .pagination li a:focus, .pagination li span:focus {
+	background-color: #FFFFFF !important;
+	outline: none;
+}
