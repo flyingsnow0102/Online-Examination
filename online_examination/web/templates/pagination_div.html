@@ -1,14 +1,33 @@
-<div class="page" ng-hide="visible_list.length < 1">
+<!--  <div class="page" ng-hide="visible_list.length < 1">
     <ul class="pagination"> 
-    	<li class="arrow unavailable">
-    		<a href ng-click="prevPage()">&laquo;</a>
-    	</li>
-    	<li ng-repeat="page in range(pages)" ng-class="getClass($index+1)">
-    		<a href="" ng-click="select_page($index+1)">[[$index+1]]</a>
-    	</li>
-    	<li class="arrow">
-    		<a href ng-click="nextPage()">&raquo;</a>
-    	</li> 
+        <li class="arrow unavailable">
+            <a href="" ng-click="select_previous_page()">&laquo;</a>
+        </li>
+        <li ng-repeat="page in range(pages)" ng-class="getClass($index+1)">
+            <a href="" ng-click="select_page($index+1)">[[$index+1]]</a>
+        </li>
+        <li class="arrow">
+            <a href="" ng-click="select_next_page()">&raquo;</a>
+        </li> 
+    </ul>
+</div>
+<div class="clear"></div> -->
+
+ <div class="page" ng-hide="pages <= 1">
+    <ul class="pagination">         
+        <li><a href="" ng-click="select_page(1)">First</a></li>
+        <li class="arrow unavailable">
+            <a href="" ng-click="select_previous_page()">&laquo;</a>
+        </li>
+        <li ng-show="current_page > 2"><a href="" ng-click="select_page(current_page-2)">[[ current_page-2 ]]</a></li>
+        <li ng-show="current_page != 1"><a class="no_color" href="" ng-click="select_page(current_page-1)">[[ current_page-1 ]]</a></li>
+        <li class="selected_page"><a href="" ng-click="select_page(current_page)">[[ current_page ]]</a></li>
+        <li><a href="" ng-hide="pages == current_page" ng-click="select_page(current_page+1)">[[ current_page+1 ]]</a></li>
+        <li><a href="" ng-hide="pages == current_page || pages == current_page+1" ng-click="select_page(current_page+2)">[[ current_page+2 ]]</a></li>
+        <li class="arrow">
+            <a href="" ng-click="select_next_page()">&raquo;</a>
+        </li> 
+        <li><a href="" ng-click="select_page(pages)">Last</a></li>
     </ul>
 </div>
 <div class="clear"></div>

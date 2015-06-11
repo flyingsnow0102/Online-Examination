@@ -987,6 +987,22 @@ function WriteExamController($scope, $element, $http, $timeout, share, $location
     $scope.range = function(n) {
         return new Array(n);
     }
+    $scope.getClass = function(page) {
+        if(page == $scope.current_page)
+            return "current";
+        else
+            return '';
+    }
+    $scope.select_next_page = function(){
+        var page = $scope.current_page + 1;
+        if(page <= $scope.pages)
+            select_page(page, $scope.questions, $scope);
+    }
+    $scope.select_previous_page = function(){
+        var page = $scope.current_page - 1
+        if(page != 0)
+            select_page(page, $scope.questions, $scope);
+    }
 
 }
 function ResultController($scope, $element, $http, $timeout, share, $location){  

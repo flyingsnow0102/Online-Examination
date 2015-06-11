@@ -12,23 +12,13 @@ function paginate(list, $scope, page_interval) {
         $scope.pages = parseInt($scope.pages) + 1;
     $scope.visible_list = list.slice(0, page_interval);
 }
-$scope.prevPage = function () {
-    if ($scope.currentPage > 0) {
-        $scope.currentPage--;
-    }
-};
-
-$scope.nextPage = function () {
-    if ($scope.currentPage < $scope.visible_list.length - 1) {
-        $scope.currentPage++;
-    }
-};   
+ 
 function select_page(page, list, $scope, page_interval) {
-    if(!page_interval)
-        var page_interval = 20;
+    // if(!page_interval)
+    //     var page_interval = 20;
     var last_page = page - 1;
-    var start = (last_page * page_interval);
-    var end = page_interval * page;
+    var start = (last_page * $scope.page_interval);
+    var end = $scope.page_interval * page;
     $scope.visible_list = list.slice(start, end);
     $scope.current_page = page;
 }
