@@ -23,4 +23,6 @@ urlpatterns = patterns('',
 	url(r'^edit_question/(?P<question_id>\d+)/$', EditQuestion.as_view(), name="edit_question"),
 	url(r'^delete_question/(?P<question_id>\d+)/$', DeleteQuestion.as_view(), name="delete_question"),
 	url(r'^create_answersheet/$', CreateAnswerSheet.as_view(), name='create_answersheet'),
+
+	# url(r'^SaveQuestions_excel/$', SaveQuestions_excel.as_view(), name='SaveQuestions_excel'),
 )

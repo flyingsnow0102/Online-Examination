@@ -91,6 +91,8 @@
 							</div>
 						</div>
 					</div>
+
+
 					<div class="col-xs-12" >
 						<div  ng-repeat="question in question_details.questions" class="col-lg-12 col-bottom-box">
 							<div class="form-group">
@@ -144,6 +146,30 @@
 							</div>
 						</div>
 					</div>
+
+
+
+
+
+					<div class="col-xs-12 " >
+						<div class="col-lg-12 col-bottom-box">
+							<div class="form-group">
+
+								<label for="inputEmail3" class="col-xs-12 control-label">Upload Question</label>
+								<div class="col-xs-12">
+					                  <input type="file" fileread="question_excel.src"/>
+					                  <input type="hidden" ng-model="question_excel.src"/>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+
+
+					
+
+
 					<!-- <div>
 						<label>Total Subject Marks: [[subject_total_mark]]</label>
 					</div>	
@@ -185,6 +211,7 @@
 						<div class="buttons">
 							{% include 'pagination_div.html' %}
 							<p ng-show="error_flag" class="error_message">[[message]]</p>
+							<!-- <input type="submit" value="Save and Continue" ng-click="save_questions()" class="btn btn-info"> -->
 							<input type="submit" value="Save and Continue" ng-click="save_questions()" class="btn btn-info">
 						</div>
 					</div>

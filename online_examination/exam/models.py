@@ -43,6 +43,8 @@ class Exam(models.Model):
     no_subjects= models.IntegerField('Number of Subjects', default=0)
     exam_total= models.IntegerField('Exam Total', default=0)
     subjects = models.ManyToManyField(Subject, null=True, blank=True)
+    excel_questions = models.FileField( upload_to = "uploads/photos/", null=True, blank=True)
+    
 
     def __unicode__(self):
         return str(self.exam_name)

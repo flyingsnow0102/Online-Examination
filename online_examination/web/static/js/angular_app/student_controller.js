@@ -62,21 +62,24 @@ function save_new_student($http, $scope) {
             }
         }).success(function(data, status){
             if (data.result == 'error'){
-                $scope.error_flag=true;
-                $scope.validation_error = data.message;
-                $('#spinner').css('height', '0px');
-            }
-            else {
-                $scope.auto_genrated_password = data.auto_genrated_password;
-                $('#spinner').css('display', 'none');
-                $('#dialogue_popup').css('display', 'block');
-                $('#show_password').css('display', 'block');
-            }
+-                $scope.error_flag=true;
+-                $scope.validation_error = data.message;
+-                $('#spinner').css('height', '0px');
+-            }
+-            else {
+-                $scope.auto_genrated_password = data.auto_genrated_password;
+-                $('#spinner').css('display', 'none');
+-                $('#dialogue_popup').css('display', 'block');
+-                $('#show_password').css('display', 'block');
+-            }
+
+            console.log("sucess")
 
         }).error(function(data, status){
             $scope.error_flag=true;
-            $scope.validation_error = data.message;
-            $('#spinner').css('height', '0px');
+-            $scope.validation_error = data.message;
+-            $('#spinner').css('height', '0px');
+            console.log("failed")
         });
     }
 }

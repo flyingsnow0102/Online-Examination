@@ -461,6 +461,7 @@ function QuestionController($scope, $element, $http, $timeout, share, $location)
                 
             ],
             'subject': '',
+            'excel_url': '',
         };
         $scope.subjects = [];
         $scope.visible_list = [];
@@ -482,6 +483,8 @@ function QuestionController($scope, $element, $http, $timeout, share, $location)
             format:'%d/%m/%Y',
         });
     }
+
+
     
     $scope.get_semester = function(){
         $scope.edit_marks = false;
@@ -523,40 +526,180 @@ function QuestionController($scope, $element, $http, $timeout, share, $location)
         } return true;
     }
 
+   
+
+    // $scope.save_excel_quetions = function(){
+
+    //     console.log($scope.question_excel.src);
+    //     console.log("*********");
+    //     if($scope.question_excel.src){
+    //         params = { 
+    //             'question_details': angular.toJson($scope.question_details),
+    //             "csrfmiddlewaretoken" : $scope.csrf_token
+    //         }
+    //         $http({
+    //             method: 'post',
+    //             url: "/exam/save_questions/",
+    //             data: $.param(params),
+    //             headers: {
+    //                 'Content-Type' : 'application/x-www-form-urlencoded'
+    //             }
+    //         }).success(function(data, status) {
+    //             if (data.result == 'error'){
+    //                 $scope.error_flag=true;
+    //                 $scope.message = data.message;
+    //             } else {
+    //                 document.location.href ='/exam/create_questions/';
+    //             }
+    //         }).error(function(data, success){
+    //             $scope.error_flag=true;
+    //             $scope.message = data.message;
+    //         });
+
+    //     }
+    // }
+
     $scope.save_questions = function() {
-        if($scope.validate_marks()){ 
-            for(i=0;i<$scope.question_details.questions.length;i++){
-                for(j=0;j<$scope.question_details.questions[i].choices.length;j++){
-                    if($scope.question_details.questions[i].choices[j].correct_answer == true){
-                        $scope.question_details.questions[i].choices[j].correct_answer = "true";
-                    }else{
-                        $scope.question_details.questions[i].choices[j].correct_answer = "false";
+        // console.log($scope.question_excel.src['name']);
+        console.log("*****&&&&&&&&&&****");
+
+        console.log($scope.question_excel)
+        if($scope.question_excel== undefined)
+        {
+            console.log("undefined value")
+            if($scope.validate_marks()){ 
+                console.log("if")
+                for(i=0;i<$scope.question_details.questions.length;i++){
+                    for(j=0;j<$scope.question_details.questions[i].choices.length;j++){
+                        if($scope.question_details.questions[i].choices[j].correct_answer == true){
+                            $scope.question_details.questions[i].choices[j].correct_answer = "true";
+                        }else{
+                            $scope.question_details.questions[i].choices[j].correct_answer = "false";
+                        }
                     }
+                }  
+                params = { 
+                    'question_details': angular.toJson($scope.question_details),
+                    "csrfmiddlewaretoken" : $scope.csrf_token,
+                    "excel_upload":""
+                    // "excel_upload": $scope.question_excel.src['name']
                 }
+
+                // var fd = new FormData();
+
+                // fd.append('photo_img', $scope.question_excel.src)
+                
+                // for(var key in params){
+                //     fd.append(key, params[key]);          
+                // }
+
+                $http({
+                    method: 'post',
+                    url: "/exam/save_questions/",
+                    data: $.param(params),
+                    // data: $.param(fd),
+                    headers: {
+                        'Content-Type' : 'application/x-www-form-urlencoded'
+                    }
+                }).success(function(data, status) {
+                    if (data.result == 'error'){
+                        $scope.error_flag=true;
+                        $scope.message = data.message;
+                    } else {
+                        document.location.href ='/exam/create_questions/';
+                    }
+                }).error(function(data, success){
+                    $scope.error_flag=true;
+                    $scope.message = data.message;
+                });
             }  
+        }
+
+        else if($scope.question_excel.src['name']){ 
+
             params = { 
                 'question_details': angular.toJson($scope.question_details),
-                "csrfmiddlewaretoken" : $scope.csrf_token
+                "csrfmiddlewaretoken" : $scope.csrf_token,
+                "excel_upload": $scope.question_excel.src['name'],
+                "exam": $scope.question_details.exam,
+                "subject": $scope.question_details.subject.subject,
+                "subject_id" : $scope.question_details.subject.subject_id,
             }
-            $http({
-                method: 'post',
-                url: "/exam/save_questions/",
-                data: $.param(params),
-                headers: {
-                    'Content-Type' : 'application/x-www-form-urlencoded'
+
+            var fd = new FormData();
+
+            fd.append('photo_img', $scope.question_excel.src)
+
+            for(var key in params){
+                fd.append(key, params[key]);          
+            }
+
+            console.log("enter here *****")
+            var url = "/exam/save_questions/";
+            $http.post(url, fd, {
+                transformRequest: angular.identity,
+                headers: {'Content-Type': undefined
                 }
-            }).success(function(data, status) {
+            }).success(function(data, status){
+                console.log(data);
                 if (data.result == 'error'){
                     $scope.error_flag=true;
                     $scope.message = data.message;
                 } else {
                     document.location.href ='/exam/create_questions/';
                 }
-            }).error(function(data, success){
-                $scope.error_flag=true;
-                $scope.message = data.message;
+
+            }).error(function(data, status){
+                console.log("error");
             });
-        }  
+
+        }
+
+        // else if($scope.validate_marks()){ 
+        //     console.log("else if")
+        //     for(i=0;i<$scope.question_details.questions.length;i++){
+        //         for(j=0;j<$scope.question_details.questions[i].choices.length;j++){
+        //             if($scope.question_details.questions[i].choices[j].correct_answer == true){
+        //                 $scope.question_details.questions[i].choices[j].correct_answer = "true";
+        //             }else{
+        //                 $scope.question_details.questions[i].choices[j].correct_answer = "false";
+        //             }
+        //         }
+        //     }  
+        //     params = { 
+        //         'question_details': angular.toJson($scope.question_details),
+        //         "csrfmiddlewaretoken" : $scope.csrf_token,
+        //         "excel_upload": $scope.question_excel.src['name']
+        //     }
+
+        //     var fd = new FormData();
+
+        //     fd.append('photo_img', $scope.question_excel.src)
+            
+        //     // for(var key in params){
+        //     //     fd.append(key, params[key]);          
+        //     // }
+
+        //     $http({
+        //         method: 'post',
+        //         url: "/exam/save_questions/",
+        //         data: $.param(params),
+        //         // data: $.param(fd),
+        //         headers: {
+        //             'Content-Type' : 'application/x-www-form-urlencoded'
+        //         }
+        //     }).success(function(data, status) {
+        //         if (data.result == 'error'){
+        //             $scope.error_flag=true;
+        //             $scope.message = data.message;
+        //         } else {
+        //             document.location.href ='/exam/create_questions/';
+        //         }
+        //     }).error(function(data, success){
+        //         $scope.error_flag=true;
+        //         $scope.message = data.message;
+        //     });
+        // }  
     }              
     
 

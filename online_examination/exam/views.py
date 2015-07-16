@@ -10,6 +10,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 from exam.models import *
 from academic.models import Student
+import xlrd
 
 
 class ScheduleExam(View):
@@ -52,31 +53,109 @@ class CreateQuestion(View):
     def get(self, request, *args, **kwargs):             
         return render(request, 'create_questions.html', {})
 
+
+
+import os.path
+
 class SaveQuestions(View):
+
     def post(self, request, *args, **kwargs):
-        questions = ast.literal_eval(request.POST['question_details'])
-        course = Course.objects.get(id = questions['course'])
-        semester = Semester.objects.get(id = questions['semester'])
-        exam = Exam.objects.get(id = questions['exam'])
-        subject_details = questions['subject']
-        subject = Subject.objects.get(id = subject_details['subject_id'])
-        total_mark = 0
-        if request.is_ajax(): 
-            # try:
-            for question_detail in questions['questions']:
-                question = Question.objects.create(exam=exam,subject=subject)
-                question_data = question.set_attributes(question_detail)
-            res = {
-                'result': 'ok',
-            } 
-            # except:
-            #     res = {
-            #             'result': 'error',
-            #         } 
-            status_code = 200
-            response = simplejson.dumps(res)
-            return HttpResponse(response, status = status_code, mimetype="application/json")
-        return render(request, 'create_questions.html', {})
+        if request.POST['excel_upload']:
+            print "@@@@@@@@"
+            questions = request.POST['question_details']
+            subject_id = request.POST['subject_id']
+            exam = Exam.objects.get(id = request.POST['exam'])
+            subj = Subject.objects.get(id = request.POST['subject_id'])
+            exam.excel_questions = request.FILES.get('photo_img', '')            
+            exam.save()
+            print subj.total_mark 
+            path = str(os.path.abspath(os.path.dirname(__file__))).replace("/exam","/media/")
+            path = path + str(exam.excel_questions)
+            xl_workbook = xlrd.open_workbook(path)
+            xl_sheet = xl_workbook.sheet_by_index(0)
+            cols = xl_sheet.ncols
+
+            total = 0
+            for row_idx in range(1, xl_sheet.nrows):
+                print xl_sheet.row(row_idx)[2].value
+                total = total + int(xl_sheet.row(row_idx)[2].value)
+
+            if total == int(subj.total_mark):
+                for row_idx in range(1, xl_sheet.nrows):
+                    que = xl_sheet.row(row_idx)[0].value
+                    answer =  xl_sheet.row(row_idx)[1].value
+                    marks = xl_sheet.row(row_idx)[2].value
+                    if que and answer and marks:
+                        question = Question()
+                        question.exam  = exam
+                        question.question = que
+                        question.subject = subj
+                        question.mark = marks
+                        question.save()
+                        answer = int(answer) + 2
+                        # ch = Choice()
+                        # ch.choice = answer
+                        # ch.correct_answer = True
+                        # ch.save()
+                        # question.choices.add(ch)
+                        for i in range(3,cols+1):
+                               try:
+                                    options = xl_sheet.row(row_idx)[i].value
+                               except:
+                                    options =''
+
+                               if que and answer and marks and options:
+                                    ch = Choice()
+                                    ch.choice = options
+                                    if i == answer:
+                                        ch.correct_answer = True
+                                        print "true answer"
+                                        print i
+                                    else:
+                                        ch.correct_answer = False
+                                    ch.save()
+                                    question.choices.add(ch)
+                        question.save()
+                res = {
+                    'result': 'Sucess'
+                } 
+            else:
+                res = {
+                    'result': 'error',
+                    'message':"Total Marks Not Matching"
+                } 
+
+            if request.is_ajax():
+                
+                print "ajax"
+                response = simplejson.dumps(res)
+                return HttpResponse(response, mimetype="application/json")
+
+            return render(request, 'create_questions.html', {})
+
+        else:
+            questions = ast.literal_eval(request.POST['question_details'])
+            course = Course.objects.get(id = questions['course'])
+            semester = Semester.objects.get(id = questions['semester'])
+
+
+            exam = Exam.objects.get(id = questions['exam'])
+            subject_details = questions['subject']
+            subject = Subject.objects.get(id = subject_details['subject_id'])
+            total_mark = 0
+            if request.is_ajax(): 
+                # try:
+                for question_detail in questions['questions']:
+                    question = Question.objects.create(exam=exam,subject=subject)
+                    question_data = question.set_attributes(question_detail)
+                res = {
+                    'result': 'ok',
+                } 
+               
+                status_code = 200
+                response = simplejson.dumps(res)
+                return HttpResponse(response, status = status_code, mimetype="application/json")
+            return render(request, 'create_questions.html', {})
 
 
 def save_exam_schedule_details(exam, request):
