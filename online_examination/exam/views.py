@@ -60,6 +60,7 @@ import os.path
 class SaveQuestions(View):
 
     def post(self, request, *args, **kwargs):
+        print "enter to post"
         if request.POST['excel_upload']:
             print "@@@@@@@@"
             questions = request.POST['question_details']
@@ -68,6 +69,42 @@ class SaveQuestions(View):
             subj = Subject.objects.get(id = request.POST['subject_id'])
             exam.excel_questions = request.FILES.get('photo_img', '')            
             exam.save()
+
+            exam_list = Exam.objects.filter(subjects = subj, exam_name = exam.exam_name, course = exam.course, semester = exam.semester)
+
+            # for cloning
+            # try:
+            if 1 == 1:
+                ques = Question.objects.filter(subject=subj)
+                try:
+                    in_queue = ques[0]
+                    exam_id = in_queue.exam.id 
+                except:
+                    pass
+                for que in ques:
+                    if exam_id == que.exam.id :
+                        question = Question()
+                        question.exam  = exam
+                        question.question = que.question
+                        question.subject = que.subject
+                        question.mark = que.mark
+                        question.save()
+                        chs = que.choices.all()
+                        for c in chs:
+                            ch = Choice()
+                            ch.choice = c.choice
+                            ch.correct_answer = c.correct_answer
+                            ch.save()
+                            question.choices.add(ch)
+                        question.save()
+                        print "cloning"
+
+            # except:
+            #     print "error selecting saved question"
+            #     print "******************************"
+            # end cloning
+
+
             print subj.total_mark 
             path = str(os.path.abspath(os.path.dirname(__file__))).replace("/exam","/media/")
             path = path + str(exam.excel_questions)
@@ -93,11 +130,6 @@ class SaveQuestions(View):
                         question.mark = marks
                         question.save()
                         answer = int(answer) + 2
-                        # ch = Choice()
-                        # ch.choice = answer
-                        # ch.correct_answer = True
-                        # ch.save()
-                        # question.choices.add(ch)
                         for i in range(3,cols+1):
                                try:
                                     options = xl_sheet.row(row_idx)[i].value
@@ -111,14 +143,37 @@ class SaveQuestions(View):
                                         ch.correct_answer = True
                                         print "true answer"
                                         print i
+                                        print options
                                     else:
                                         ch.correct_answer = False
                                     ch.save()
                                     question.choices.add(ch)
                         question.save()
+                
+
+                        for ex_li in exam_list:
+                            if question.exam.id == ex_li.id:
+                                print "same quetion"
+                            else:
+                                quest = Question()
+                                quest.exam  = ex_li
+                                quest.question = question.question
+                                quest.subject = question.subject
+                                quest.mark = question.mark
+                                quest.save()
+                                chs = question.choices.all()
+                                for c in chs:
+                                    ch = Choice()
+                                    ch.choice = c.choice
+                                    ch.correct_answer = c.correct_answer
+                                    ch.save()
+                                    quest.choices.add(ch)
+                                quest.save()
+                                print "copying"
                 res = {
                     'result': 'Sucess'
-                } 
+                }
+
             else:
                 res = {
                     'result': 'error',
@@ -135,6 +190,7 @@ class SaveQuestions(View):
 
         else:
             questions = ast.literal_eval(request.POST['question_details'])
+            print questions
             course = Course.objects.get(id = questions['course'])
             semester = Semester.objects.get(id = questions['semester'])
 
@@ -142,15 +198,80 @@ class SaveQuestions(View):
             exam = Exam.objects.get(id = questions['exam'])
             subject_details = questions['subject']
             subject = Subject.objects.get(id = subject_details['subject_id'])
+
+            exam_list = Exam.objects.filter(subjects = subject, exam_name = exam.exam_name, course = exam.course, semester = exam.semester)
+
+             # for cloning
+            # try:
+            if 1 == 1:
+                ques = Question.objects.filter(subject=subject).order_by('exam__id')
+                print ques
+                try:
+                    in_queue = ques[0]
+                    exam_id = in_queue.exam.id 
+                except:
+                    pass
+                for que in ques:
+                    try:
+                        in_queue = ques[0]
+                        exam_id = in_queue.ex_li.id 
+                    except:
+                        pass
+                    for que in ques:
+                        if exam_id == que.exam.id :
+                            question = Question()
+                            question.exam  = ex_li
+                            question.question = que.question
+                            question.subject = que.subject
+                            question.mark = que.mark
+                            question.save()
+                            chs = que.choices.all()
+                            for c in chs:
+                                ch = Choice()
+                                ch.choice = c.choice
+                                ch.correct_answer = c.correct_answer
+                                ch.save()
+                                question.choices.add(ch)
+                            question.save()
+                            print "cloning"
+
+            # except:
+            #     print "error selecting saved question"
+            # end cloning
+
+
             total_mark = 0
             if request.is_ajax(): 
-                # try:
                 for question_detail in questions['questions']:
-                    question = Question.objects.create(exam=exam,subject=subject)
-                    question_data = question.set_attributes(question_detail)
+                    if question_detail['question'] and question_detail['mark']:
+                        question = Question.objects.create(exam=exam,subject=subject)
+                        question_data = question.set_attributes(question_detail)
+
+                        for ex_li in exam_list:
+                            if question.exam.id == ex_li.id:
+                                print "same quetion"
+                            else:
+                                quest = Question()
+                                quest.exam  = ex_li
+                                quest.question = question.question
+                                quest.subject = question.subject
+                                quest.mark = question.mark
+                                quest.save()
+                                chs = question.choices.all()
+                                for c in chs:
+                                    ch = Choice()
+                                    ch.choice = c.choice
+                                    ch.correct_answer = c.correct_answer
+                                    ch.save()
+                                    quest.choices.add(ch)
+                                quest.save()
+                                print "copying"
+
+                
                 res = {
                     'result': 'ok',
                 } 
+                
                
                 status_code = 200
                 response = simplejson.dumps(res)
@@ -165,10 +286,13 @@ def save_exam_schedule_details(exam, request):
     course = Course.objects.get(id = request.POST['course'])
     semester = Semester.objects.get(id = request.POST['semester'])
     print(exam.start_date,exam.end_date,course,semester)
-    if request.POST['student']:
-        print("mmm")
-        student = Student.objects.get(id=request.POST['student'])
-        exam.student = student
+    try:
+        if request.POST['student']:
+            print("mmm")
+            student = Student.objects.get(id=request.POST['student'])
+            exam.student = student
+    except:
+        print "Exception in student"
     exam.exam_name = course.course + '-' +semester.semester
     exam.no_subjects = request.POST['no_subjects']
     exam.exam_total = request.POST['exam_total']
@@ -188,43 +312,84 @@ def save_exam_schedule_details(exam, request):
 class SaveExamSchedule(View):
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
-            try:
-                student = Student.objects.get(id=request.POST['student'])
-            except:
-                print "Exception"
-                student = ''
-            print student,"student"
-            try:
-                course = Course.objects.get(id = request.POST['course'])
-                semester = Semester.objects.get(id = request.POST['semester'])
-                exam_name = ''
-                exam_name = course.course + '-' +semester.semester
-                if student:
-                    exam = Exam.objects.get(course=course,semester=semester,exam_name=exam_name,student=student)
-                else:
-                    exam = Exam.objects.get(course=course,semester=semester,exam_name=exam_name)
-                print exam,"exam"
-                res = {
-                    'result': 'error',
-                    'message': 'Exams Scheduled Already'
-                }
-                status_code = 200
-            except Exception as ex:
-                print str(ex), "Exception ===="
-                exam_name = ''
-                exam_name = course.course + '-' +semester.semester
-                if student:
-                    exam = Exam.objects.create(course=course,semester=semester,exam_name=exam_name)
-                else:
-                    exam = Exam.objects.create(course=course,semester=semester,exam_name=exam_name)
-                print exam
-                save_exam_schedule_details(exam, request)                     
-                res = {
-                    'result': 'Ok',
-                }
-                status_code = 200
+            print request.POST['student']
+            student_list = request.POST['student'].split(",")
+            for stu in student_list:
+                try:
+                    student = Student.objects.get(id=int(stu))
+                except:
+                    print "Exception"
+                    student = ''
+                try:
+                    course = Course.objects.get(id = request.POST['course'])
+                    semester = Semester.objects.get(id = request.POST['semester'])
+                    exam_name = ''
+                    exam_name = course.course + '-' +semester.semester
+                    if student:
+                        exam = Exam.objects.get(course=course,semester=semester,exam_name=exam_name,student=student)
+                    else:
+                        exam = Exam.objects.get(course=course,semester=semester,exam_name=exam_name)
+                    status_code = 200
+                except Exception as ex:
+                    print str(ex), "Exception ===="
+                    exam_name = ''
+                    exam_name = course.course + '-' +semester.semester
+                    if student:
+                        exam = Exam.objects.create(course=course,semester=semester,exam_name=exam_name)
+                    else:
+                        exam = Exam.objects.create(course=course,semester=semester,exam_name=exam_name)
+                    print exam
+                    exam.student = student
+                    save_exam_schedule_details(exam, request)                     
+            res = {
+                'result': 'Ok',
+            }
+            status_code = 200
             response = simplejson.dumps(res)
             return HttpResponse(response, status = status_code, mimetype="application/json")
+
+# class SaveExamSchedule(View):
+#     def post(self, request, *args, **kwargs):
+#         if request.is_ajax():
+#             print request.POST['student']
+#             print "***********"
+#             try:
+#                 student = Student.objects.get(id=request.POST['student'])
+#             except:
+#                 print "Exception"
+#                 student = ''
+#             print student,"student"
+#             try:
+#                 course = Course.objects.get(id = request.POST['course'])
+#                 semester = Semester.objects.get(id = request.POST['semester'])
+#                 exam_name = ''
+#                 exam_name = course.course + '-' +semester.semester
+#                 if student:
+#                     exam = Exam.objects.get(course=course,semester=semester,exam_name=exam_name,student=student)
+#                 else:
+#                     exam = Exam.objects.get(course=course,semester=semester,exam_name=exam_name)
+#                 print exam,"exam"
+#                 res = {
+#                     'result': 'error',
+#                     'message': 'Exams Scheduled Already'
+#                 }
+#                 status_code = 200
+#             except Exception as ex:
+#                 print str(ex), "Exception ===="
+#                 exam_name = ''
+#                 exam_name = course.course + '-' +semester.semester
+#                 if student:
+#                     exam = Exam.objects.create(course=course,semester=semester,exam_name=exam_name)
+#                 else:
+#                     exam = Exam.objects.create(course=course,semester=semester,exam_name=exam_name)
+#                 print exam
+#                 save_exam_schedule_details(exam, request)                     
+#                 res = {
+#                     'result': 'Ok',
+#                 }
+#                 status_code = 200
+#             response = simplejson.dumps(res)
+#             return HttpResponse(response, status = status_code, mimetype="application/json")
 
 class ViewExamSchedule(View):
 
@@ -249,6 +414,35 @@ class ViewExamSchedule(View):
             response = simplejson.dumps(res)
             return HttpResponse(response, status=status, mimetype='application/json')
 
+
+class GetStudent(View):
+
+    def get(self, request, *args, **kwargs):
+        print "in get student"
+        course_id = kwargs['course_id']
+        semester_id = kwargs['semester_id']
+        exams_objs = Exam.objects.filter(course=course_id, semester=semester_id)
+        student_list = []
+        # for exam in exams_objs:
+        #     student_list.append(exam.student)
+
+        for exam in exams_objs:
+            print exam.student.id
+            student_list.append({
+                'student': exam.student.student_name, 
+                'id': exam.student.id              
+            })
+
+        res = {
+                'result': 'ok',
+                'students': student_list,
+            }
+        status = 200
+        response = simplejson.dumps(res)
+        return HttpResponse(response, status=status, mimetype='application/json')
+
+
+
 class GetExams(View):
 
     def get(self, request, *args, **kwargs):
@@ -256,9 +450,14 @@ class GetExams(View):
         course_id = kwargs['course_id']
         semester_id = kwargs['semester_id']
         exams = {}
+
         if request.is_ajax():
             try:
-                exam = Exam.objects.get(course=course_id, semester=semester_id,student__user=request.user)
+                student = Student.objects.get(user=request.user)
+                exam = Exam.objects.get(course=course_id, semester=semester_id,student=student)
+                # exam = Exam.objects.get(course=course_id, semester=semester_id,student__user=request.user)
+                print exam
+                print "***"
                 exams = exam.get_json_data()
                 if request.GET.get('from', '') == 'write_exam':
                     exams = exam.get_json_data('x')
@@ -302,6 +501,35 @@ class GetExams(View):
             response = simplejson.dumps(res)
             return HttpResponse(response, mimetype='application/json')
 
+
+class GetExamCreate_student(View):
+    def get(self, request, *args, **kwargs):
+        print "enter here"
+        course_id = kwargs['course_id']
+        semester_id = kwargs['semester_id']
+        student_id = kwargs['student_id']
+        print(course_id,semester_id)
+        if request.is_ajax():
+            try:
+                print("rrr")
+                exam = Exam.objects.get(course=course_id, semester=semester_id, student=student_id)
+                
+                exams = exam.get_json_data()
+                print exams
+                res = {
+                'result': 'ok',
+                'exams': exams,
+                } 
+            except:
+                res = {
+                'result': 'error',
+                
+                }
+            response = simplejson.dumps(res)
+            return HttpResponse(response, mimetype='application/json') 
+
+
+
 class GetExamCreate(View):
     def get(self, request, *args, **kwargs):
         
@@ -311,10 +539,19 @@ class GetExamCreate(View):
         if request.is_ajax():
             try:
                 print("rrr")
-                exam = Exam.objects.get(course=course_id, semester=semester_id)
-                print(exam)
-                exams = exam.get_json_data()
-                print(exams)
+                # exam = Exam.objects.get(course=course_id, semester=semester_id)
+                exams_objs = Exam.objects.filter(course=course_id, semester=semester_id)
+
+                exam_list = []
+
+                for exam in exams_objs:
+                    # print(exam)
+                    exams = exam.get_json_data()
+                    exam_list.append(exam.get_json_data())
+                    # print exams
+                # exams = exam.get_json_data()
+                print(exam_list)
+                print("********")
                 res = {
                 'result': 'ok',
                 'exams': exams,

@@ -40,7 +40,9 @@
 									<label class="col-xs-12 control-label"> Semester</label>  
 								</div>
 								<div class="col-xs-12">
-									<select  class="form-control" name="semester" ng-model="question_details.semester" ng-options="semester.id as semester.semester for semester in semesters" ng-change="get_exams()">
+									<!-- <select  class="form-control" name="semester" ng-model="question_details.semester" ng-options="semester.id as semester.semester for semester in semesters" ng-change="get_exams()"> -->
+										<select  class="form-control" name="semester" ng-model="question_details.semester" ng-options="semester.id as semester.semester for semester in semesters" ng-change="get_student()">
+
 										<option value="">Select</option>
 									</select>
 								</div>
@@ -48,6 +50,49 @@
 						</div>
 					</div>
 					<div class="row" >
+						<div class="col-xs-12" >
+							
+							<div class="col-xs-12 col-lg-6">
+								<div  class="form-group">
+									<label class="col-xs-12 control-label"> Student </label>  
+								</div>
+								<div class="col-xs-12">
+									<select class="form-control" class="form-control" name="student" ng-model="question_details.student" ng-options="student.id as student.student for student in students" ng-change="get_exams_student()">
+										<option value="">Select</option>	
+									</select>
+								</div>
+							</div>
+
+							<div class="col-xs-12 col-lg-6">
+								<div  class="form-group">
+									<label class="col-xs-12 control-label"> Exam</label>  
+								</div>
+								<div class="col-xs-12">
+									<input  class="form-control" type="text" name="exam_name" ng-model="exam_name" readonly>
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+<!-- FOR SELECT MORE STUDENT -->
+					<div class="row" >
+						<div class="col-xs-12" >
+							<div class="col-xs-12 col-lg-6">
+								<div  class="form-group">
+									<label class="col-xs-12 control-label"> Subject </label>  
+								</div>
+								<div class="col-xs-12">
+									<select class="form-control" class="form-control" name="subject" ng-model="question_details.subject" ng-options="subject as subject.subject for subject in subjects" ng-change="get_subject()">
+										<option value="">Select</option>	
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+<!-- END -->
+
+					<!-- <div class="row" >
 						<div class="col-xs-12" >
 							<div class="col-xs-12 col-lg-6">
 								<div  class="form-group">
@@ -68,7 +113,8 @@
 								</div>
 							</div>
 						</div>
-					</div>
+					</div> -->
+
 					<div class="col-xs-12">
 						<div class="row">
 							<div class="col-lg-10 col-xs-8">

@@ -3,7 +3,8 @@ from django.conf.urls import patterns, url
 
 from exam.views import (ScheduleExam, ViewExamSchedule, EditExamSchedule, \
 	SaveExamSchedule, DeleteExamSchedule, CreateQuestion, GetExams,GetExamCreate, SaveQuestions, CreateExam, \
-	WriteExam, QuestionPaper, CreateAnswerSheet, EditQuestion, GetSubjects, ListQuestions, DeleteQuestion)
+	WriteExam, QuestionPaper, CreateAnswerSheet, EditQuestion, GetSubjects, ListQuestions,\
+	GetExamCreate_student, DeleteQuestion,GetStudent)
 
 urlpatterns = patterns('',	
 	url(r'^schedule_exam/$', ScheduleExam.as_view(), name='schedule_exam'),
@@ -23,6 +24,9 @@ urlpatterns = patterns('',
 	url(r'^edit_question/(?P<question_id>\d+)/$', EditQuestion.as_view(), name="edit_question"),
 	url(r'^delete_question/(?P<question_id>\d+)/$', DeleteQuestion.as_view(), name="delete_question"),
 	url(r'^create_answersheet/$', CreateAnswerSheet.as_view(), name='create_answersheet'),
+	
+	url(r'^get_student/(?P<course_id>\d+)/(?P<semester_id>\d+)/$',GetStudent.as_view(), name="get_student"), 
+	url(r'^get_exam_create_student/(?P<course_id>\d+)/(?P<semester_id>\d+)/(?P<student_id>\d+)/$', GetExamCreate_student.as_view(), name="get_exam_create_student"), 
 
 	# url(r'^SaveQuestions_excel/$', SaveQuestions_excel.as_view(), name='SaveQuestions_excel'),
 )

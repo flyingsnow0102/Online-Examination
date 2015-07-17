@@ -144,10 +144,12 @@ function ExamController($scope, $element, $http, $timeout, share, $location)
         if($scope.validate_exam_schedule()) {
             $scope.start_date = $$('#start_date')[0].get('value');
             $scope.end_date = $$('#end_date')[0].get('value');
+            console.log($scope.student.toString())
+            console.log("************")
             params = {
                 'course': $scope.course,
                 'semester': $scope.semester,
-                'student': $scope.student,
+                'student': $scope.student.toString(),
                 'start_date': $scope.start_date,
                 'end_date': $scope.end_date,
                 'exam_total': $scope.exam_total,
@@ -500,6 +502,22 @@ function QuestionController($scope, $element, $http, $timeout, share, $location)
             console.log(data || "Request failed");
         });
     }
+
+    $scope.get_student = function(){
+        $scope.edit_marks = false;
+        $scope.display_marks = false;
+        $scope.exam_name = '';
+        $scope.subjects = ''; 
+        var url = '/exam/get_student/'+ $scope.question_details.course+ '/'+ $scope.question_details.semester+ '/';
+        $http.get(url).success(function(data) {
+            $scope.student = '';
+            $scope.students = data.students;
+        }).error(function(data, status)
+        {
+            console.log(data || "Request failed");
+        });
+    }
+
     $scope.validate_marks = function() {        
         $scope.validation_error = '';
         $scope.flag = 0;
@@ -721,6 +739,27 @@ function QuestionController($scope, $element, $http, $timeout, share, $location)
         });
     }
      
+    $scope.get_exams_student = function(){    
+        $scope.validation_error = "";
+        $scope.exam_name = '';
+        $scope.subjects = '';    
+        $scope.url = '/exam/get_exam_create_student/'+ $scope.question_details.course+ '/'+ $scope.question_details.semester+ '/'+ $scope.question_details.student+ '/';
+        $http.get($scope.url).success(function(data)
+        {   console.log(data.exams)
+            console.log("*******&&&&*******")
+            if (data.result == 'ok') {
+                $scope.question_details.exam = data.exams.exam;
+                $scope.exam_total = data.exams.exam_total;
+                $scope.exam_name = data.exams.exam_name;
+                $scope.subjects = data.exams.subjects_data;
+            } else {
+                $scope.validation_error = "No exam in this course";
+            }          
+        }).error(function(data, status)
+        {
+            console.log(data || "Request failed");
+        });
+    } 
 
     $scope.get_exams = function(){    
         $scope.validation_error = "";
@@ -729,6 +768,7 @@ function QuestionController($scope, $element, $http, $timeout, share, $location)
         $scope.url = '/exam/get_exam_create/'+ $scope.question_details.course+ '/'+ $scope.question_details.semester+ '/';
         $http.get($scope.url).success(function(data)
         {   console.log(data.exams)
+            console.log("*******&&&&*******")
             if (data.result == 'ok') {
                 $scope.question_details.exam = data.exams.exam;
                 $scope.exam_total = data.exams.exam_total;

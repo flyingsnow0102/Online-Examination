@@ -61,25 +61,26 @@ function save_new_student($http, $scope) {
             headers: {'Content-Type': undefined
             }
         }).success(function(data, status){
+            console.log("sucess ****")
             if (data.result == 'error'){
--                $scope.error_flag=true;
--                $scope.validation_error = data.message;
--                $('#spinner').css('height', '0px');
--            }
--            else {
--                $scope.auto_genrated_password = data.auto_genrated_password;
--                $('#spinner').css('display', 'none');
--                $('#dialogue_popup').css('display', 'block');
--                $('#show_password').css('display', 'block');
--            }
+                $scope.error_flag=true;
+                $scope.validation_error = data.message;
+                $('#spinner').css('height', '0px');
+            }
+            else {
+                $scope.auto_genrated_password = data.auto_genrated_password;
+                $('#spinner').css('display', 'none');
+                $('#dialogue_popup').css('display', 'block');
+                $('#show_password').css('display', 'block');
+            }
 
-            console.log("sucess")
 
         }).error(function(data, status){
+            console.log("failed ***")
             $scope.error_flag=true;
--            $scope.validation_error = data.message;
--            $('#spinner').css('height', '0px');
-            console.log("failed")
+            $scope.validation_error = data.message;
+            $('#spinner').css('height', '0px');
+
         });
     }
 }
