@@ -37,7 +37,7 @@ class Login(View):
         elif request.POST.get('registration_no','') and request.POST.get('hallticket_no','') and request.POST.get('password',''):
             username = request.POST.get('registration_no','') + request.POST.get('hallticket_no','')
             user = authenticate(username=username, password=request.POST.get('password',''))
-            
+            print "hi"
             student = Student.objects.get(user=user)
             if user and user.is_active and student.is_curently_logged_in==False:
                 login(request, user)
@@ -132,6 +132,7 @@ class StudentResults(View):
                         # exam_results.append('percentage':mark_percentage)
 
                         print exam_results
+                        print student_details,"student"
                         res = {
                             'result': 'Ok',
                             'exam_results': exam_results,

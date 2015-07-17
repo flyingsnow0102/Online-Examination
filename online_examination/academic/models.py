@@ -48,7 +48,7 @@ class Student(models.Model):
 			'course':self.course.course,
 			'specialization':self.specialization,
 			'photo':self.photo.name,
-			'semester':self.semester,
+			'semester':self.semester.id if self.semester else '',
 			'dob':str(self.dob),
 			'age':self.age,
 			'permanent_address':self.permanent_address,
