@@ -579,6 +579,12 @@ function QuestionController($scope, $element, $http, $timeout, share, $location)
 
     $scope.save_questions = function() {
         // console.log($scope.question_excel.src['name']);
+        var height = $(document).height();
+        
+        height = height + 'px';
+        $('#overlay').css('height', height);
+        $('#spinner').css('height', height);
+
         console.log("*****&&&&&&&&&&****");
 
         console.log($scope.question_excel)
@@ -623,12 +629,15 @@ function QuestionController($scope, $element, $http, $timeout, share, $location)
                     if (data.result == 'error'){
                         $scope.error_flag=true;
                         $scope.message = data.message;
+                        $('#spinner').css('height', '0px');
                     } else {
+                        $('#spinner').css('display', 'none');
                         document.location.href ='/exam/create_questions/';
                     }
                 }).error(function(data, success){
                     $scope.error_flag=true;
                     $scope.message = data.message;
+                    $('#spinner').css('height', '0px');
                 });
             }  
         }
