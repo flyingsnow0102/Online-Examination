@@ -243,18 +243,18 @@ class AnswerSheet(models.Model):
                     print("oo")
                     print(student_answers)
         answer_sheet_data = {
-            'student': self.student.id,
-            'student_name': self.student.student_name,
-            'fathers_name': self.student.father_name if self.student.father_name else '',
-            'specialization': self.student.specialization if self.student.specialization else '',
-            'exam': self.exam.id,
-            'exam_name':self.exam.exam_name,
-            'subject_name': self.subject.subject_name,
+            'student': self.student.id.encode('ascii', 'ignore').decode('ascii'),
+            'student_name': self.student.student_name.encode('ascii', 'ignore').decode('ascii'),
+            'fathers_name': self.student.father_name.encode('ascii', 'ignore').decode('ascii') if self.student.father_name else '',
+            'specialization': self.student.specialization.encode('ascii', 'ignore').decode('ascii') if self.student.specialization else '',
+            'exam': self.exam.id.encode('ascii', 'ignore').decode('ascii'),
+            'exam_name':self.exam.exam_name.encode('ascii', 'ignore').decode('ascii'),
+            'subject_name': self.subject.subject_name.encode('ascii', 'ignore').decode('ascii'),
             'status':self.status if self.status else 'Fail',
             'total_mark': self.total_mark if self.total_mark else 0,
-            'subject' : self.subject.id,
-            'subject_total_mark':self.subject.total_mark,
-            # 'student_answers': student_answers,
+            'subject' : self.subject.id.encode('ascii', 'ignore').decode('ascii'),
+            'subject_total_mark':self.subject.total_mark.encode('ascii', 'ignore').decode('ascii'),
+            'student_answers': student_answers.encode('ascii', 'ignore').decode('ascii'),
             'is_completed': self.is_completed if self.is_completed else '',
             'is_attempted': self.is_attempted if self.is_attempted else '',
         }
