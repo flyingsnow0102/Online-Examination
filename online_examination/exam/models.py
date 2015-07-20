@@ -168,7 +168,7 @@ class StudentAnswer(models.Model):
 
 
     def __unicode__(self):
-        return str(self.question.question) if self.question else 'Student'
+        return str(self.question.question.encode("utf-8")) if self.question else 'Student'
 
     class Meta:
         verbose_name = 'StudentAnswer'
@@ -254,7 +254,7 @@ class AnswerSheet(models.Model):
             'total_mark': self.total_mark if self.total_mark else 0,
             'subject' : self.subject.id,
             'subject_total_mark':self.subject.total_mark,
-            # 'student_answers': student_answers,
+            'student_answers': student_answers,
             'is_completed': self.is_completed if self.is_completed else '',
             'is_attempted': self.is_attempted if self.is_attempted else '',
         }
