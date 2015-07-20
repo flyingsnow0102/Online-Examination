@@ -168,7 +168,7 @@ class StudentAnswer(models.Model):
 
 
     def __unicode__(self):
-        return str(self.question.question) if self.question else 'Student'
+        return str(self.question.question) if self.question.question else 'Student'
 
     class Meta:
         verbose_name = 'StudentAnswer'
