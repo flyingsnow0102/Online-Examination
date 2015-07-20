@@ -235,7 +235,7 @@ class AnswerSheet(models.Model):
                     print(student_answer)
                     student_answers.append({
                         'id': student_answer.id if student_answer.id else '',
-                        'question': student_answer.question.id if student_answer.question else'',
+                        'question': student_answer.question.id if student_answer.question.id else'',
                         'choosen_choice': student_answer.choosen_choice.id if student_answer.choosen_choice else '',
                         'is_correct':student_answer.is_correct if student_answer.is_correct else '',
                         'mark': student_answer.mark if student_answer.mark else '',
@@ -254,7 +254,7 @@ class AnswerSheet(models.Model):
             'total_mark': self.total_mark if self.total_mark else 0,
             'subject' : self.subject.id,
             'subject_total_mark':self.subject.total_mark,
-            'student_answers': student_answers.encode('ascii', 'ignore').decode('ascii'),
+            'student_answers': student_answers,
             'is_completed': self.is_completed if self.is_completed else '',
             'is_attempted': self.is_attempted if self.is_attempted else '',
         }
