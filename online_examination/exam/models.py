@@ -232,7 +232,7 @@ class AnswerSheet(models.Model):
             if self.student_answers.all().count() > 0:
                 
                 for student_answer in self.student_answers.all().order_by('-id'):
-                    print(student_answer)
+                    # print(student_answer)
                     student_answers.append({
                         'id': student_answer.id if student_answer.id else '',
                         'question': student_answer.question.id if student_answer.question else'',
