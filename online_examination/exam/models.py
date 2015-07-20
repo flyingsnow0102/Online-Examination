@@ -167,8 +167,8 @@ class StudentAnswer(models.Model):
     mark = models.DecimalField('Mark', max_digits=14, decimal_places=2, default=0 )
 
 
-    # def __unicode__(self):
-    #     return str(self.question.question) if self.question else 'Student'
+    def __unicode__(self):
+        return str(self.question.question).encode('ascii', 'ignore').decode('ascii') if self.question else 'Student'
 
     class Meta:
         verbose_name = 'StudentAnswer'
