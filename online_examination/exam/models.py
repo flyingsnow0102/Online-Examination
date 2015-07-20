@@ -167,8 +167,8 @@ class StudentAnswer(models.Model):
     mark = models.DecimalField('Mark', max_digits=14, decimal_places=2, default=0 )
 
 
-    def __unicode__(self):
-        return str(self.question.question.encode("utf-8")) if self.question else 'Student'
+    # def __unicode__(self):
+    #     return str(self.question.question) if self.question else 'Student'
 
     class Meta:
         verbose_name = 'StudentAnswer'
@@ -185,8 +185,8 @@ class AnswerSheet(models.Model):
     total_mark = models.DecimalField('Total Mark Obtained',max_digits=14, decimal_places=2, default=0)
     status = models.CharField('Status ', null=True, blank=True, max_length=200)
 
-    # def __unicode__(self):
-    #     return str(self.student.student_name) if self.student else 'Student'
+    def __unicode__(self):
+        return str(self.student.student_name) if self.student else 'Student'
 
     class Meta:
         verbose_name = 'AnswerSheet'
@@ -232,7 +232,7 @@ class AnswerSheet(models.Model):
             if self.student_answers.all().count() > 0:
                 
                 for student_answer in self.student_answers.all().order_by('-id'):
-                    # print(student_answer)
+                    print(student_answer)
                     student_answers.append({
                         'id': student_answer.id if student_answer.id else '',
                         'question': student_answer.question.id if student_answer.question else'',
