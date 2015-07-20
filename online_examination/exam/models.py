@@ -243,11 +243,11 @@ class AnswerSheet(models.Model):
                     print("oo")
                     print(student_answers)
         answer_sheet_data = {
-            'student': self.student.id.encode('ascii', 'ignore').decode('ascii'),
+            'student': self.student.id,
             'student_name': self.student.student_name.encode('ascii', 'ignore').decode('ascii'),
             'fathers_name': self.student.father_name.encode('ascii', 'ignore').decode('ascii') if self.student.father_name else '',
             'specialization': self.student.specialization.encode('ascii', 'ignore').decode('ascii') if self.student.specialization else '',
-            'exam': self.exam.id.encode('ascii', 'ignore').decode('ascii'),
+            'exam': self.exam.id,
             'exam_name':self.exam.exam_name.encode('ascii', 'ignore').decode('ascii'),
             'subject_name': self.subject.subject_name.encode('ascii', 'ignore').decode('ascii'),
             'status':self.status if self.status else 'Fail',
