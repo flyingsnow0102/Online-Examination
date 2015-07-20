@@ -185,8 +185,8 @@ class AnswerSheet(models.Model):
     total_mark = models.DecimalField('Total Mark Obtained',max_digits=14, decimal_places=2, default=0)
     status = models.CharField('Status ', null=True, blank=True, max_length=200)
 
-    def __unicode__(self):
-        return str(self.student.student_name) if self.student else 'Student'
+    # def __unicode__(self):
+    #     return str(self.student.student_name) if self.student else 'Student'
 
     class Meta:
         verbose_name = 'AnswerSheet'
