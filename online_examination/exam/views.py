@@ -108,6 +108,8 @@ class SaveQuestions(View):
             print subj.total_mark 
             path = str(os.path.abspath(os.path.dirname(__file__))).replace("/exam","/media/")
             path = path + str(exam.excel_questions)
+            print path
+            print "***********path **********"
             xl_workbook = xlrd.open_workbook(path)
             xl_sheet = xl_workbook.sheet_by_index(0)
             cols = xl_sheet.ncols

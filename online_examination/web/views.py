@@ -105,7 +105,8 @@ class StudentResults(View):
             mark_percentage=0,
             exam_resgistration_no = request.GET.get('exam_resgistration_no')
             print(exam_resgistration_no)
-            try:
+            # try:
+            if 1 == 1:    
                 student_data = Student.objects.get(registration_no=exam_resgistration_no)
                 print(student_data)
                 student_details.append(student_data.get_json_data())
@@ -139,11 +140,11 @@ class StudentResults(View):
                             'student_details':student_details,
                         }
 
-            except:
-                res = {
-                    'result': 'error',
-                    'message':'There is no student with this Registration number'
-                }
+            # except:
+            #     res = {
+            #         'result': 'error',
+            #         'message':'There is no student with this Registration number'
+            #     }
             
             
             response = simplejson.dumps(res)
